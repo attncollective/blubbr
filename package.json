@@ -1,0 +1,12 @@
+{
+    "name": "attnethglobal",
+    "version": "1.0.0",
+    "author": "attn.money",
+    "license": "MIT",
+    "private": true,
+    "workspaces": [
+        "backend",
+        "frontend",
+        "quicknode"
+    ]
+}
