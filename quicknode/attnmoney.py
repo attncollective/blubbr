@@ -10,7 +10,18 @@ OPTIONS = {
 }
 w3 = Web3(HTTPProvider('https://boldest-holy-shape.discover.quiknode.pro/d5f0ea02a4f3ad5971e328cd02db1f32a39d6274/', request_kwargs=OPTIONS))
 
+def get_erc20_tokens(_wallet_address):
+    """Queries QuickNode for the connected wallet's tokens. 
+    :returns: A list of data about all of the ERC20 tokens in the wallet
+    :rtype: list of dicts
+    """
 
+    resp = w3.provider.make_request('qn_getWalletTokenBalance', {
+    "wallet": _wallet_address,
+    })
+
+    assets = resp["result"]["assets"] # returns name, decimals, symbol, chain, network, amount
+    return assets 
 
 def get_wallet_nfts(_wallet_address):
     """Queries QuickNode for the connected wallet's NFTs. 
@@ -106,6 +117,7 @@ def main():
     nft_collection_data_example = {"contract_address": [{"floor_price": 1}, {"last_sale_price": 1.1}]}
     
     wallet_address = "0x46295302252aD1fE561B35542669BA8fEA22Cfcc" # this will need to come from frontend instead
+    erc20_tokens = get_erc20_tokens(wallet_address)
     nfts = get_wallet_nfts(wallet_address)
     contracts = get_all_contracts(nfts)
     top_collections = get_top_collections(contracts)
