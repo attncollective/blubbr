@@ -9,7 +9,7 @@ export default function ProfileCard({ id, handle, name, stats, picture }) {
                 {picture &&
                 picture.original &&
                 picture.original.url.includes('lens.infura-ipfs.io') ? (
-                    <div className="relative w-60 h-60 bg-emerald-900 rounded">
+                    <div className="relative w-56 h-56 bg-emerald-900 rounded">
                         <Image
                             src={picture.original.url}
                             layout="fill"
