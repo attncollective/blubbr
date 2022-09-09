@@ -117,7 +117,7 @@ const RECOMMENDED_PROFILES = `
   }
 `
 
-export default function Home() {
+export default function Feed() {
     const { loading, error, data } = useQuery(gql(RECOMMENDED_PROFILES), {
         variables: {},
         context: { isMainnet: true },
