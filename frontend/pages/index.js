@@ -141,17 +141,18 @@ export default function Home() {
         )
 
     return (
-        <div className="my-16 space-y-12 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-12 sm:space-y-0 md:grid-cols-3 md:gap-x-8 lg:grid-cols-4">
-            {data &&
-                data.recommendedProfiles.map((profile) => (
-                    <ProfileCard
-                        id={profile.id}
-                        handle={profile.handle}
-                        name={profile.name}
-                        stats={profile.stats}
-                        picture={profile.picture}
-                    />
-                ))}
-        </div>
+        <></>
+        // <div className="mt-24 ml-24 md:ml-64 xl:ml-80 mb-16 space-y-12 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-12 sm:space-y-0 lg:grid-cols-3 md:gap-x-8 2xl:grid-cols-4">
+        //     {data &&
+        //         data.recommendedProfiles.map((profile) => (
+        //             <ProfileCard
+        //                 id={profile.id}
+        //                 handle={profile.handle}
+        //                 name={profile.name}
+        //                 stats={profile.stats}
+        //                 picture={profile.picture}
+        //             />
+        //         ))}
+        // </div>
     )
 }
