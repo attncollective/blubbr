@@ -1,6 +1,13 @@
 from web3 import Web3, HTTPProvider
 import json
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+QUICKNODE_KEY = os.getenv("QUICKNODE_KEY")
+MODULENFT_KEY = os.getenv("MODULENFT_KEY")
 
 OPTIONS = {
   'headers':
@@ -8,7 +15,8 @@ OPTIONS = {
       'x-qn-api-version': '1'
     }
 }
-w3 = Web3(HTTPProvider('https://boldest-holy-shape.discover.quiknode.pro/d5f0ea02a4f3ad5971e328cd02db1f32a39d6274/', request_kwargs=OPTIONS))
+
+w3 = Web3(HTTPProvider(f'https://boldest-holy-shape.discover.quiknode.pro/{QUICKNODE_KEY}/', request_kwargs=OPTIONS))
 
 def get_erc20_tokens(_wallet_address):
     """Queries QuickNode for the connected wallet's tokens. 
@@ -49,7 +57,7 @@ def get_wallet_nfts(_wallet_address):
     return assets  
 
 def get_all_contracts(_assets):
-    """Gathers the contract addresses into a list, not including duplicates.
+    """Gathers the contract addresses into a list, and deduplicates them.
     :returns: A list of all of the contracts used for NFTs owned by the wallet. 
     :rtype: list
     """
@@ -62,70 +70,85 @@ def get_all_contracts(_assets):
     return all_contracts
 
 
-def get_top_collections(_contracts): # This also needs to return floor price; not just the contracts 
-    """Takes the de-duplicated list of NFT contracts, and queries OS for the floor price of each.
-    Before we can query the floor price, we first have to query the OS API to find the collection_slug value
-    in order to use the correct endpoint that includes floor price info. 
-    :returns: A dict of the four top NFT collections by floor price, and the current floor price. 
-    :rtype: dict
+def get_collection_data(_all_collections): 
+    """Takes all collections and gathers their name, floor price and image URL into a dict.
+    :returns: A list of dicts, each dict acting as data for a single collection. 
+    :rtype: List of dicts
     """
-    # TODO: Make sure to include picture from IPFS; of which one from collection? maybe the floor piece? 
-    # TODO: Determine how we should handle contracts that don't have an OS slug available (if any like this exist)
-    os_slugs = []
-    floor_prices = {} # os_slug: floor_price_int
-    
-    for contract in _contracts:
-        url = f"https://api.opensea.io/api/v1/asset_contract/{contract}"
-        headers = {
-            "Accept": "application/json",
-            "X-API-KEY": "keygoeshere"
-        }
+    collections_data = []
+    headers = {
+        "Accept": "application/json",
+        "X-API-KEY": f"{MODULENFT_KEY}"
+    }
+
+    for collection in _all_collections:
+        collection_data = {}
+        url = f"https://api.modulenft.xyz/api/v1/opensea/collection/info?type={collection}"
+
         response = requests.get(url, headers=headers)
-        os_slugs.append(response.text["collection"]["slug"])
-        
-        # if I decide a dict is better
-        #os_slugs[contract] = response.text["colleciton"]["slug"]
+        response = json.loads(response.text)
 
-    print("OS SLUGS")
-    print(os_slugs)
+        try:
+            collection_data["name"] = response["info"]["name"]
+            collection_data["floorPrice"] = float(response["info"]["statistics"]["floorPrice"]["unit"])
+            collection_data["imageUrl"] = response["info"]["owner"]["imageUrl"]
+            collections_data.append(collection_data)
 
-    for slug in os_slugs:
-        
-        
-        url = url = f"https://api.opensea.io/api/v1/collection/{slug}"
-        headers = {
-            "Accept": "application/json",
-            "X-API-KEY": "keygoeshere"
-        }
-        response = requests.get(url, headers=headers)
+        # Logic is required to catch collections with no active listings to prevent an error; easiest thing to do is assume that this collection isn't worth anything and skip it
+        except TypeError as e:
+            pass
 
-        floor_prices[slug] = response.text["stats"]["floor_price"]
-        
-    print("FLOOR PRICES: ")
-    print(floor_price)
-    return floor_prices
+    return collections_data
 
 
-def get_sale_price(_top_collections):
-    """Takes the top collections and gets the last sale price for each collection. 
-    :returns: The last sale price of each of the top four collections.
-    :rtype: List of ints 
+
+def determine_top_5_collections(_collection_data): 
+    """Takes all collections and determines the top 5 in terms of floor price. 
+    :returns: A list of dicts; each dict has data about one collection 
+    :rtype: List of dicts
     """
-    pass
+    _collection_data.sort(key = lambda x: x["floorPrice"], reverse=True)
+    top_5_collections = _collection_data[0:4]
 
-def main():
-    nft_collection_data_example = {"contract_address": [{"floor_price": 1}, {"last_sale_price": 1.1}]}
+    return top_5_collections
+
+
+
+def get_last_sale(_top_5_collections):
+    """Takes the top 5 collections and retrieves their last sale price.
+    NOTE: This currently only gathers sales data from OpenSea. 
+    :returns: The final data to send to the frontend, containing collection name, floor price, last sale price, and image URL. 
+    :rtype: List of dicts
+    """
+    frontend_data = []
+    #print("TYPE OF FRONTEND DATA")
+    #print(type(frontend_data))
     
-    wallet_address = "0x46295302252aD1fE561B35542669BA8fEA22Cfcc" # this will need to come from frontend instead
+    headers = {
+        "Accept": "application/json",
+        "X-API-KEY": f"{MODULENFT_KEY}"
+    }
+    
+    for collection in _top_5_collections:
+        url = f"https://api.modulenft.xyz/api/v1/opensea/orders/sales?type=0x8184a482A5038B124d933B779E0Ea6e0fb72F54E&count=1&currencySymbol=ETH"
+        response = requests.get(url, headers=headers)
+        response = json.loads(response.text)
+        last_sale_price = response["sales"][0]["price"]
+        collection["lastSalePrice"] = last_sale_price
+        frontend_data.append(collection)
+
+    return frontend_data
+
+def main():    
+    wallet_address = "0x03576d59D983436688664926105A4795Def1d381" # this will need to come from frontend instead
     erc20_tokens = get_erc20_tokens(wallet_address)
     nfts = get_wallet_nfts(wallet_address)
     contracts = get_all_contracts(nfts)
-    top_collections = get_top_collections(contracts)
-    sale_prices = get_sale_price(top_collections)
+    collections = get_collection_data(contracts)
+    top_5_collections = determine_top_5_collections(collections)
+    frontend_data = get_last_sale(top_5_collections)
+    print(frontend_data)
 
-    # assign sale prices to each collection
-    #top_1_price, top_2_price, top_3_price, top_4_price = sale_prices[0], sale_prices[1], sale_prices[2], sale_prices[3]
 
-    # TODO: Get the data format in a better state that includes contract address, floor price, and last sale for use on the webpage 
-
-main()
+if __name__ == "__main__":
+    main()
