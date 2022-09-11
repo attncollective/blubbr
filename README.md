@@ -33,11 +33,10 @@ QuickNode's endpoints are used for RPC and HTTP endpoints, where needed.
 1. QuickNode
 2. IPFS/ Filecoin
 3. The Graph
-4. Lens
+4. Unlock
 5. EPNS
 6. Polygon
 7. Aave
-8. Valist
-9. LivePeer
-10. Optimism 
-11. Spruce (Sign-in With Ethereum) 
+8. LivePeer
+9. Optimism 
+10. Spruce (Sign-in With Ethereum) 
