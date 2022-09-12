@@ -1,4 +1,5 @@
 import { gql, useQuery } from '@apollo/client'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -141,8 +142,7 @@ export default function Feed() {
         )
 
     return (
-        // <></>
-        <div className="mt-24 ml-24 md:ml-64 xl:ml-80 mb-16 space-y-12 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-12 sm:space-y-0 lg:grid-cols-4 md:gap-x-8 2xl:grid-cols-4">
+        <div className="mt-24 ml-24 md:ml-64 xl:ml-80 mb-16 space-y-12 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-12 sm:space-y-0 lg:grid-cols-3 md:gap-x-8 2xl:grid-cols-4">
             {data &&
                 data.recommendedProfiles.map((profile) => (
                     <ProfileCard

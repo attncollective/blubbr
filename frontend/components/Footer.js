@@ -6,7 +6,7 @@ export default function Footer() {
             <div className="w-full z-20 py-12 px-4 sm:px-6 lg:px-8 xl:px-10 md:flex md:items-center md:justify-end">
                 <div className="flex justify-center space-x-6">
                     <a
-                        href="http://www.attn.money/"
+                        href="https://www.30daysofweb3.xyz/"
                         className="text-sm md:text-base text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400 hover:scale-105 "
                     >
                         &copy; attn.money 2022
@@ -26,7 +26,7 @@ export default function Footer() {
                         </svg>
                     </a>
                     <a
-                        href="https://github.com/0xChampi/attnethglobal"
+                        href="https://github.com/giano95/web3rsvp"
                         className="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400 hover:scale-110"
                     >
                         <span className="sr-only">GitHub</span>
