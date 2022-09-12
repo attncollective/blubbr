@@ -13,6 +13,7 @@ import {
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
+import '@rainbow-me/rainbowkit/styles.css'
 
 // RAINBOW_KIT_STUFF: Configure the chains and generate the required connectors
 const { chains, provider } = configureChains(
@@ -24,7 +25,7 @@ const { chains, provider } = configureChains(
     ]
 )
 const { connectors } = getDefaultWallets({
-    appName: 'attn.money',
+    appName: 'attnmoney',
     chains,
 })
 const wagmiClient = createClient({

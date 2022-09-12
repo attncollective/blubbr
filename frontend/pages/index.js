@@ -1,158 +1,38 @@
 import { gql, useQuery } from '@apollo/client'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import ProfileCard from '../components/ProfileCard'
-
-const RECOMMENDED_PROFILES = `
-  query {
-    recommendedProfiles {
-        id
-        name
-        bio
-        attributes {
-            displayType
-            traitType
-            key
-            value
-        }
-        metadata
-        isDefault
-        picture {
-          ... on NftImage {
-            contractAddress
-            tokenId
-            uri
-            verified
-          }
-          ... on MediaSet {
-            original {
-              url
-              width
-              height
-              mimeType
-            }
-            small {
-              url
-              width
-              height
-              mimeType
-            }
-            medium {
-              url
-              width
-              height
-              mimeType
-            }
-          }
-          __typename
-        }
-        handle
-        coverPicture {
-          ... on NftImage {
-            contractAddress
-            tokenId
-            uri
-            verified
-          }
-          ... on MediaSet {
-            original {
-              url
-              width
-              height
-              mimeType
-            }
-            small {
-              height
-              width
-              url
-              mimeType
-            }
-            medium {
-              url
-              width
-              height
-              mimeType
-            }
-          }
-          __typename
-        }
-        ownedBy
-        dispatcher {
-          address
-          canUseRelay
-        }
-        stats {
-          totalFollowers
-          totalFollowing
-          totalPosts
-          totalComments
-          totalMirrors
-          totalPublications
-          totalCollects
-        }
-        followModule {
-          ... on FeeFollowModuleSettings {
-            type
-            amount {
-              asset {
-                symbol
-                name
-                decimals
-                address
-              }
-              value
-            }
-            recipient
-          }
-          ... on ProfileFollowModuleSettings {
-           type
-          }
-          ... on RevertFollowModuleSettings {
-           type
-          }
-      }
-    }
-  }
-`
 
 export default function Home() {
-    const { loading, error, data } = useQuery(gql(RECOMMENDED_PROFILES), {
-        variables: {},
-        context: { isMainnet: true },
-        fetchPolicy: 'no-cache',
+    return <></>
+}
+
+export async function getServerSideProps(context) {
+    const ethers = require('ethers')
+    const fs = require('fs')
+    require('dotenv').config()
+
+    const sampleEndpointName = process.env.SAMPLE_ENDPOINT_NAME
+    const quicknodeKey = process.env.QUICKNODE_KEY
+
+    const provider = new ethers.providers.JsonRpcProvider({
+        url: `https://${sampleEndpointName}.discover.quiknode.pro/${quicknodeKey}/`,
+        headers: { 'x-qn-api-version': 1 },
     })
-    useEffect(() => {
-        if (!loading && !error) console.log(data)
-    }, [loading, error, data])
 
-    if (loading)
-        return (
-            <div>
-                <p>Loading...</p>
-            </div>
-        )
-    if (error)
-        return (
-            <div>
-                <p>{`Error! ${error.message}`}</p>
-            </div>
-        )
+    const heads = await provider.send('qn_fetchNFTs', {
+        wallet: '0x91b51c173a4bdaa1a60e234fc3f705a16d228740',
+        // omitFields: ['provenance', 'traits'],
+        page: 1,
+        perPage: 10,
+    })
 
-    return (
-        // <></>
-        <div className="mt-24 ml-24 md:ml-64 xl:ml-80 mb-16 space-y-12 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-12 sm:space-y-0 lg:grid-cols-4 md:gap-x-8 2xl:grid-cols-4">
-            {data &&
-                data.recommendedProfiles.map((profile) => (
-                    <ProfileCard
-                        id={profile.id}
-                        handle={profile.handle}
-                        name={profile.name}
-                        stats={profile.stats}
-                        picture={profile.picture}
-                    />
-                ))}
-        </div>
-    )
+    let json = JSON.stringify(heads)
+    fs.writeFile('nft_test.json', json)
+
+    return {
+        props: {},
+    }
 }

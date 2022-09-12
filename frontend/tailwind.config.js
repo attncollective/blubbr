@@ -33,22 +33,23 @@ module.exports = {
             },
             keyframes: {
                 'blob-1': {
-                    '0%, 100%': { transform: 'translate(-90%, -60%) scale(0.9)' },
-                    '25%, 75%': { transform: 'translate(-95%, -65%) scale(1.1)' },
-                    '50%': { transform: 'translate(-100%, -70%) scale(1)' },
+                    '0%, 100%': { transform: 'translate(-80%, -50%) scale(1.0)' },
+                    '25%, 75%': { transform: 'translate(-85%, -55%) scale(1.1)' },
+                    '50%': { transform: 'translate(-90%, -60%) scale(0.9)' },
                 },
                 'blob-2': {
-                    '0%, 100%': { transform: 'translate(-10%, -60%) scale(1)' },
-                    '25%, 75%': { transform: 'translate(-5%, -65%) scale(1.1)' },
-                    '50%': { transform: 'translate(+0%, -70%) scale(0.9)' },
+                    '0%, 100%': { transform: 'translate(+10%, -30%) scale(1)' },
+                    '25%, 75%': { transform: 'translate(+15%, -50%) scale(1.1)' },
+                    '50%': { transform: 'translate(+20%, -40%) scale(0.9)' },
                 },
                 'blob-3': {
-                    '0%, 100%': { transform: 'translate(-50%, -40%) scale(1.1)' },
-                    '25%, 75%': { transform: 'translate(-45%, -15%) scale(1)' },
-                    '50%': { transform: 'translate(-40%, -10%) scale(0.9)' },
+                    '0%, 100%': { transform: 'translate(-50%, -10%) scale(1.1)' },
+                    '25%, 75%': { transform: 'translate(-45%, -30%) scale(1)' },
+                    '50%': { transform: 'translate(-40%, -50%) scale(0.9)' },
                 },
             },
         },
     },
+    variants: {},
     plugins: [require('@tailwindcss/aspect-ratio'), require('@tailwindcss/forms')],
 }
