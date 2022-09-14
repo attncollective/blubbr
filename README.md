@@ -24,7 +24,8 @@ The Graph is used to query data about ERC20 tokens held by the signed in user.
 Notifications are sent via EPNS for activity that occurs on attn.money. 
 
 - Licensing
-Valist could be used for NFT licensing to enable access to a paid tier of attn.money. 
+Unlock could be used for NFT licensing to enable access to a paid tier of attn.money.
+https://docs.unlock-protocol.com/tools/paywall/locking-page
 
 - RPCs
 QuickNode's endpoints are used for RPC and HTTP endpoints, where needed.
