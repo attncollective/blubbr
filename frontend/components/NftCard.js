@@ -1,7 +1,10 @@
 import Image from 'next/image'
 import { PhotoIcon } from '@heroicons/react/24/outline'
+import { useState, useEffect } from 'react'
 
-export default function NftCard({ name, tokenId, symbol, url, openseaUrl }) {
+export default function NftCard({ name, tokenId, symbol, rawUrl, openseaUrl }) {
+    const [url, setUrl] = useState(getUrl(rawUrl))
+
     // basically if we have a URI we replace the gateway, otherwise we pass the url
     function getUrl(uriOrUrl) {
         const url = ''
@@ -10,38 +13,44 @@ export default function NftCard({ name, tokenId, symbol, url, openseaUrl }) {
         } else {
             url = uriOrUrl
         }
-        if (uriOrUrl && uriOrUrl.endsWith('.mp4')) {
-            url = openseaUrl
-        }
         return url
     }
 
     return (
-        <div className="flex flex-col w-64 h-96 z-10 rounded-lg shadow-xl bg-black/[18%] dark:bg-white/[10%]">
+        <div className="flex flex-col w-56 h-80 z-10 rounded-lg shadow-xl bg-black/[18%] dark:bg-white/[10%]">
             {url ? (
-                <div className="">
+                <div className="w-56 h-56">
                     <img
-                        src={getUrl(url)}
-                        alt="nft-1"
+                        src={url}
                         className="rounded-t-lg shadow-lg"
-                        style={{ width: '256px', height: '256px', objectFit: 'cover' }}
+                        style={{ width: '224px', height: '224px', objectFit: 'cover' }}
+                        onError={(e) => {
+                            e.currentTarget.src = 'images/image_not_found.png'
+                            e.currentTarget.className = 'rounded-t-lg shadow-lg dark:invert-[90%]'
+                            e.currentTarget.onerror = null
+                        }}
                     />
                 </div>
             ) : (
-                <div className="w-64 h-64 border-b border-black dark:border-white">
-                    <PhotoIcon className="w-32 h-32 m-16" />
+                <div className="w-56 h-56">
+                    <img
+                        src="images/image_not_found.png"
+                        className="rounded-t-lg shadow-lg dark:invert-[90%]"
+                        style={{ width: '224px', height: '224px', objectFit: 'cover' }}
+                    />
                 </div>
             )}
 
-            <div className="relative m-3 h-full">
-                <h1 className="mt-2 text-black dark:text-gray-200 font-bold text-lg lg:text-xl tracking-tight lg:font-extrabold">
-                    {name}{' '}
+            <div className="relative m-2 h-full">
+                <h1 className="truncate text-black dark:text-gray-200 font-bold text-lg tracking-tight">
+                    {name}
+                </h1>
+                <h2 className="truncate">
                     <span className="bg-gradient-to-r from-purple-700 via-pink-700 to-yellow-700 dark:from-purple-300 dark:via-pink-300 dark:to-yellow-300 text-transparent bg-clip-text">
                         #{tokenId}
                     </span>
-                </h1>
-                <div className="absolute bottom-0 left-0">0.2 ETH</div>
-                <div className="absolute bottom-0 right-0">42 💎</div>
+                </h2>
+                <div className="absolute bottom-0 right-0">0.2 ETH</div>
             </div>
         </div>
     )
