@@ -29,7 +29,7 @@ export default function Sidebar() {
                                     height="189"
                                 />
                             </div>
-                            <ul className="mt-4 xl:mt-8 space-y-2">
+                            <ul className="mt-6 xl:mt-8 space-y-0">
                                 <li className="mt-4 xl:mt-8">
                                     <a
                                         href="/"
@@ -46,7 +46,7 @@ export default function Sidebar() {
                                     >
                                         <UserIcon className="flex-shrink-0 w-8 h-8 md:w-5 md:h-5 xl:w-6 xl:h-6 text-gray-700 transition duration-75 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white" />
                                         <span className="hidden md:flex flex-1 ml-3 whitespace-nowrap">
-                                            My Profile
+                                            0xChampi.ETH
                                         </span>
                                         <span className="hidden md:inline-flex justify-center items-center p-3 ml-3 w-3 h-3 text-sm font-medium text-gray-200 dark:text-gray-850 bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 dark:from-purple-300/80 dark:via-pink-300/80 dark:to-yellow-300/80 rounded-full">
                                             3
@@ -66,6 +66,17 @@ export default function Sidebar() {
                                 </li>
                             </ul>
                             <ul className="mt-5 xl:mt-8 space-y-2 border-gray-500 dark:border-gray-300">
+                            <li>
+                                    <a
+                                        href="/tokens"
+                                        className="flex justify-center md:justify-start items-center p-2 text-sm xl:text-base font-normal text-black rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    >
+                                        <CurrencyDollarIcon className="flex-shrink-0 w-8 h-8 md:w-5 md:h-5 xl:w-6 xl:h-6 text-gray-700 transition duration-75 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white" />
+                                        <span className="hidden md:flex flex-1 ml-3 whitespace-nowrap">
+                                            Tokens
+                                        </span>           
+                                    </a>
+                                </li>
                                 <li className="mt-5 xl:mt-8">
                                     <a
                                         href="#"
@@ -85,17 +96,6 @@ export default function Sidebar() {
                                         <BeakerIcon className="flex-shrink-0 w-8 h-8 md:w-5 md:h-5 xl:w-6 xl:h-6 text-gray-700 transition duration-75 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white" />
                                         <span className="hidden md:flex flex-1 ml-3 whitespace-nowrap">
                                             DeFi
-                                        </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        href="#"
-                                        className="flex justify-center md:justify-start items-center p-2 text-sm xl:text-base font-normal text-black rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-                                    >
-                                        <CurrencyDollarIcon className="flex-shrink-0 w-8 h-8 md:w-5 md:h-5 xl:w-6 xl:h-6 text-gray-700 transition duration-75 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white" />
-                                        <span className="hidden md:flex flex-1 ml-3 whitespace-nowrap">
-                                            Tokens
                                         </span>
                                         <span className="hidden md:inline-flex justify-center items-center py-[2px] px-[6px] ml-3 text-xs font-medium text-gray-800 bg-gray-200 rounded-full dark:bg-gray-700 dark:text-gray-300">
                                             Soon™
