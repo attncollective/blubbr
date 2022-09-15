@@ -79,7 +79,7 @@ export default function Sidebar() {
                                 </li>
                                 <li className="mt-5 xl:mt-8">
                                     <a
-                                        href="/trending_nft""
+                                        href="/trending_nft"
                                         className="flex justify-center md:justify-start items-center p-2 text-sm xl:text-base font-normal text-black rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                                     >
                                         <HashtagIcon className="flex-shrink-0 w-8 h-8 md:w-5 md:h-5 xl:w-6 xl:h-6 text-gray-700 transition duration-75 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white" />
