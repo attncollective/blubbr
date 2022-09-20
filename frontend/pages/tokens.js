@@ -1,47 +1,59 @@
-import { ethers } from 'ethers'
+import { utils } from 'ethers'
+import { useState } from 'react'
+import { useQuery } from 'wagmi'
+import TokenCard from '../components/TokenCard'
 
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+}
+
+function displayAmount(amount) {
+    if (amount >= 1000) amount = amount.toFixed(2)
+    else if (amount >= 1) amount = amount.toFixed(3)
+    else amount = amount.toFixed(4)
+
+    return numberWithCommas(amount)
+}
 
 export default function Tokens({ data }) {
+    const [totalAmount, setTotalAmount] = useState(0)
+
+    function increaseTotalAmount(amount) {
+        setTotalAmount((prev) => prev + amount)
+    }
+
     return (
         <div className="w-full mt-40 ml-24 md:ml-64 xl:ml-80 mb-16">
-            <ul className="max-w-[50%] divide-y divide-gray-200 dark:divide-gray-700">
-                <h1>Tokens</h1>
-                {data &&
-                    data.map((token) => (
-                        <div key={token.address}>
-                            <li className="pb-3 sm:pb-4">
-                                <div className="grid grid-cols-2 flex items-center space-x-4">
-                                    <div clasName="flex-shrink-0">
-                                        <img
-                                            className="w-8 h-8 rounded-full"
-                                            src="https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=023"
-                                            alt="Neil image"
-                                        />
-                                    <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                                        {ethers.utils.formatEther(token.amount)}
-                                    </div>
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                            {token.name}
-                                        </p>
-                                        <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                                            {token.symbol}
-                                        </p>
-                                    </div>
-                                </div>
-                            </li>
-                        </div>
-                    ))}
-            </ul>
+            <div className="w-[40rem] grid grid-rows-1 py-2 px-4 border border-gray-700 dark:border-gray-400 rounded-xl bg-gray-100 dark:bg-gray-850">
+                <div className="h-12 flex justify-between items-center border-b border-gray-700 dark:border-gray-400 mb-2">
+                    <div className="font-bold text-lg">NET WORTH (EST.)</div>
+                    <div className="font-semibold text-black dark:text-white">
+                        <span className="font-medium">$</span> {displayAmount(totalAmount)}
+                    </div>
+                </div>
+
+                <div className="mx-3 my-1.5">
+                    {data &&
+                        data.map((token) => (
+                            <div key={token.address + token.network}>
+                                <TokenCard
+                                    symbol={token.symbol}
+                                    address={token.address}
+                                    amount={Number(utils.formatEther(token.amount))}
+                                    network={token.network}
+                                    increaseTotalAmount={increaseTotalAmount}
+                                />
+                            </div>
+                        ))}
+                </div>
+            </div>
         </div>
     )
 }
 
 export async function getServerSideProps(context) {
     const ethers = require('ethers')
-    const fs = require('fs')
-    const sdk = require('api')('@module/v1.0#72l7ojl0ixrvif')
+
     require('dotenv').config()
 
     const sampleEndpointName = process.env.SAMPLE_ENDPOINT_NAME
@@ -57,9 +69,6 @@ export async function getServerSideProps(context) {
         page: 1,
         perPage: 10,
     })
-
-    let json = JSON.stringify(data)
-    fs.writeFile('erc20_test.json', json)
 
     return {
         props: {
