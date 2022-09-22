@@ -1,8 +1,9 @@
 # blubbr
+![blubbui](https://user-images.githubusercontent.com/86300766/191803348-412224dc-d870-4656-a4ad-42f482d981ca.png)
 
 
 ## Tech Stack
-- Website hosted with React
+- Website hosted with NEXT
 
 - Blockchains
 attn.money is focused on mainnet for the MVP, but will include Polygon, Aave and possibly others depending on our progress.
@@ -39,5 +40,3 @@ QuickNode's endpoints are used for RPC and HTTP endpoints, where needed.
 6. Polygon
 7. Aave
 8. LivePeer
-9. Optimism 
-10. Spruce (Sign-in With Ethereum) 
