@@ -11,8 +11,8 @@ query TrendingCollections {
             name
             stats(
                     timeRange: {
-                      gte: "2022-09-19T00:00:00.000Z"
-                      lt: "2022-09-20T00:00:00.000Z"
+                      gte: "2022-09-20T00:00:00.000Z"
+                      lt: "2022-09-21T00:00:00.000Z"
                     }
                   ) {
               totalSales
@@ -61,11 +61,11 @@ export default function NFT({}) {
         )
 
     return (
-        <div className="flex w-3/4 mt-40 ml-20 md:ml-64 xl:ml-80 mb-22">
-        <div className="w-[85rem] grid grid-rows-1 py-2 px-4 border border-gray-700 dark:border-gray-400 rounded-xl bg-gray-100 dark:bg-gray-850">
-            <div className="flex justify-between items-center dark:border-gray-400 mb-2">
+        <div className="flex mt-40 ml-20 md:ml-64 xl:ml-80 mb-22">
+        <div className="w-[42rem] grid grid-rows-1 py-2 px-4 border dark:border-gray-400 rounded-xl bg-gray-100 dark:bg-gray-850">
+            <div className="flex w-[40rem] items-center dark:border-gray-400 mb-2">
             </div>       
-                 <table className="text-sm text-left text-gray-100 dark:text-gray-100 table-fixed"> 
+                 <table className="w-[38rem] items-center text-sm text-left table-fixed"> 
                  {/* <div className="h-10 w-10">
                             <img
                                 src={imageUrl}
@@ -77,12 +77,11 @@ export default function NFT({}) {
                                 }}
                             />
                         </div> */}
-                 <thead className="flex text-xs text-gray-100 uppercase bg-gray-600 dark:text-gray">
+                 <thead className="flex items-center text-xs text-gray-100 uppercase dark:border-gray-400 dark:text-gray">
                      <tr>
-                     <th scope="col" className="py-4 px-6 w-40">Name</th>
-                     <th scope="col" className="py-4 px-6 w-80">Address</th>
-                     <th scope="col" className="py-4 px-6">Symbol</th>
-                     <th scope="col" className="py-4 px-6">Total Sales</th>
+                     <th scope="col" className="py-4 px-16">Name</th>
+                     <th scope="col" className="py-4 px-14">Symbol</th>
+                     <th scope="col" className="py-4 px-1">Total Sales</th>
                      <th scope="col" className="py-4 px-6">Floor</th>
                      <th scope="col" className="py-4 px-6">Volume</th>
                      </tr>
@@ -90,7 +89,7 @@ export default function NFT({}) {
                  <tbody>
                  {data &&
                     data.data.trendingCollections.edges.map((collections) => (
-                        <div key={collections.node.address}>
+                        <div className="flex w-[45rem] items-center" key={collections.node.address}>
                             <TrendingNFT
                                 name={collections.node.name}
                                 symbol={collections.node.symbol}
