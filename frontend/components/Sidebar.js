@@ -22,11 +22,11 @@ export default function Sidebar() {
                         <div>
                             <div className="hidden md:flex invert-[80%] dark:invert-0">
                                 <Image
-                                    src="/logos/attnmoney_bg.png"
+                                    src="/logos/Blubbr-logo.png"
                                     alt="attn.money logo"
                                     layout="intrinsic"
                                     width="276"
-                                    height="189"
+                                    height="90"
                                 />
                             </div>
                             <ul className="mt-6 xl:mt-8 space-y-0">

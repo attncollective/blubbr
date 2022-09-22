@@ -28,6 +28,24 @@ query TrendingCollections {
     }
   }
 `
+const TokenImages = `
+# Query that looks up the images for BAYC#1
+query TokenImages {
+  token(
+    contractAddress: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
+    tokenId: "1,
+  ) {
+    ... on ERC721Token {
+      images {
+        url
+        width
+        height
+        mimeType
+      }
+    }
+  }
+}
+`
 
 export default function NFT({}) {
 
@@ -43,14 +61,23 @@ export default function NFT({}) {
         )
 
     return (
-        <div className="w-full mt-40 ml-24 md:ml-64 xl:ml-80 mb-16">
-        <div className="w-[40rem] grid grid-rows-1 py-2 px-4 border border-gray-700 dark:border-gray-400 rounded-xl bg-gray-100 dark:bg-gray-850">
-            <div className="h-12 flex justify-between items-center dark:border-gray-400 mb-2">
-            </div>
-         <div className="mt-24 ml-26 md:ml-64 xl:ml-80 mb-16">
-             Trending NFTs
-                 <table className="w-3/4 text-sm text-left text-gray-100 dark:text-gray-100 table-fixed"> 
-                 <thead className="flex text-xs text-white uppercase bg-gray-600 dark:text-white">
+        <div className="flex w-3/4 mt-40 ml-20 md:ml-64 xl:ml-80 mb-22">
+        <div className="w-[85rem] grid grid-rows-1 py-2 px-4 border border-gray-700 dark:border-gray-400 rounded-xl bg-gray-100 dark:bg-gray-850">
+            <div className="flex justify-between items-center dark:border-gray-400 mb-2">
+            </div>       
+                 <table className="text-sm text-left text-gray-100 dark:text-gray-100 table-fixed"> 
+                 {/* <div className="h-10 w-10">
+                            <img
+                                src={imageUrl}
+                                className="rounded-full"
+                                style={{
+                                    width: '40px',
+                                    height: '40px',
+                                    objectFit: 'cover',
+                                }}
+                            />
+                        </div> */}
+                 <thead className="flex text-xs text-gray-100 uppercase bg-gray-600 dark:text-gray">
                      <tr>
                      <th scope="col" className="py-4 px-6 w-40">Name</th>
                      <th scope="col" className="py-4 px-6 w-80">Address</th>
@@ -80,7 +107,7 @@ export default function NFT({}) {
                     <h1>Loading...</h1>
                 </div>
             )}
-        </div>
+    
         </div>
         </div>
     )

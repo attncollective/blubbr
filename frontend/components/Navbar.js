@@ -11,7 +11,7 @@ export default function Navbar() {
             <div className="flex flex-no-wrap w-full h-full justify-between xs:justify-end items-center">
                 <div className="flex xs:hidden invert-[80%] dark:invert-0">
                     <Image
-                        src="/logos/attnmoney_bg.png"
+                        src="/logos/Blubbr-logo.png"
                         alt="attn.money logo"
                         layout="intrinsic"
                         width="110"
