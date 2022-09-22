@@ -6,10 +6,10 @@
 - Website hosted with NEXT
 
 - Blockchains
-attn.money is focused on mainnet for the MVP, but will include Polygon, Aave and possibly others depending on our progress.
+blubbr is focused on mainnet for the MVP, but will include Polygon, Aave and possibly others depending on our progress.
 
 - Authentication
-Current plan is to use Moralis/ Rainbow Kit for authentication. We could potentially use Sign-in With Ethereum (made by Spruce) as well. 
+Wagmi
 
 - Storage
 IPFS and Filecoin are used for image storage when needed. IPFS could be queried at random for NFT collection pictures, if desired.
