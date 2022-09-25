@@ -1,14 +1,28 @@
-import { ApolloClient, InMemoryCache, ApolloLink, HttpLink } from '@apollo/client'
+import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from '@apollo/client/core'
 
-const directionalLink = new ApolloLink.split(
-    (operation) => operation.getContext().isMainnet, // condition
-    new HttpLink({ uri: 'https://api.lens.dev' }), // if condition is true
-    new HttpLink({ uri: 'https://api-mumbai.lens.dev' }) // if condition is false
-)
+const httpLink = new HttpLink({ uri: 'https://api-mumbai.lens.dev' })
 
-const client = new ApolloClient({
-    cache: new InMemoryCache(),
-    link: directionalLink,
+// example how you can pass in the x-access-token into requests using `ApolloLink`
+const authLink = new ApolloLink((operation, forward) => {
+    // Retrieve the authorization token from local storage.
+    // if your using node etc you have to handle your auth different
+    const token = localStorage.getItem('auth_token')
+    // console.log('token: ' + token)
+
+    // Use the setContext method to set the HTTP headers.
+    operation.setContext({
+        headers: {
+            'x-access-token': token ? `Bearer ${token}` : '',
+        },
+    })
+
+    // Call the next link in the middleware chain.
+    return forward(operation)
 })
 
-export default client
+const apolloClient = new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache(),
+})
+
+export default apolloClient
