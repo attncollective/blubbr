@@ -1,5 +1,5 @@
 {
-    "name": "@blubbr/frontend",
+    "name": "@attnethglobal/frontend",
     "version": "1.0.0",
     "author": "attn.money",
     "license": "MIT",
@@ -12,15 +12,18 @@
     },
     "dependencies": {
         "@apollo/client": "^3.6.9",
+        "@headlessui/react": "^1.7.2",
         "@heroicons/react": "^2.0.10",
         "@rainbow-me/rainbowkit": "^0.4.6",
         "api": "^4.5.2",
+        "cross-fetch": "^3.1.5",
         "dotenv": "^16.0.2",
         "ethers": "^5.6.9",
         "graphql": "^16.6.0",
+        "jose": "^4.9.3",
         "next": "12.0.7",
         "next-themes": "^0.2.0",
-        "nextjs": "^0.0.3",
+        "omit-deep": "^0.3.0",
         "react": "17.0.2",
         "react-dom": "17.0.2",
         "wagmi": "^0.6.3"

@@ -1,52 +1,36 @@
-export default function TrendingNFT({ name, address, symbol, totalSales, floor, volume }) {
-    // const [imageUrl, setImageUrl] = useState(null)
-
-    // async function fetchTokenData() {
-    //     const options = {
-    //         method: 'GET',
-    //         headers: {
-    //             Accept: 'application/json',
-    //         },
-    //     }
-    //     fetch(`https://api.coingecko.com/api/v3/coins/${ID}/contract/${address}`, options)
-    //         .then((res) => res.json())
-    //         .then((data) => {
-    //             if (data.market_data) {
-    //                 setHide(false)
-    //                 setPrice(data.market_data.current_price?.usd)
-    //                 setUsdAmount(displayAmount(data.market_data.current_price?.usd * amount))
-    //                 if (increaseTotalAmount)
-    //                     increaseTotalAmount(data.market_data.current_price?.usd * amount)
-    //                 if (data.image) setImageUrl(data.image.large)
-    //                 else setImageUrl('/logos/btc_transparent.png')
-    //             } else {
-    //                 setPrice('N.A')
-    //                 setUsdAmount('N.A')
-    //                 setImageUrl('/logos/btc_transparent.png')
-    //             }
-    //         })
-    //         .catch((err) => {
-    //             setPrice('N.A')
-    //             setUsdAmount('N.A')
-    //             setImageUrl('/logos/btc_transparent.png')
-    //             console.log(err)
-    //         })
-    //     setIsLoading(false)
-    // }
-
-    // useEffect(() => {
-    //     fetchTokenData()
-    // }, [])
-
+export default function TrendingNFT({
+    name,
+    address,
+    symbol,
+    totalSales,
+    floor,
+    volume,
+    imageUrl,
+}) {
     return (
-        <tbody>
-            <tr className="items-center justify-center border-b border-gray-400">
-            <td scope="row" className="content-evenly py-2 px-6 font-medium text-gray-50 dark:text-gray-100">{name}</td>
-            <td scope="row" className="justify-center py-2 px-36 font-medium text-gray-50 dark:text-gray-100">{symbol}</td>
-            <td scope="row" className="content-center py-2 px-6 font-medium text-gray-50 dark:text-gray-100">{totalSales}</td>
-            <td scope="row" className="content-center py-2 px-6 font-medium text-gray-50 dark:text-gray-100">{floor}</td>
-            <td scope="row" className="content-center py-2 px-6 font-medium text-gray-50 dark:text-gray-100">{volume}</td>
-            </tr>
-        </tbody>
+        <div className="w-full h-14 grid grid-cols-6 font-light text-gray-700 dark:text-gray-300">
+            <div className="col-span-2 flex justify-start items-center">
+                <div className="h-[36px] w-[36px] mr-3">
+                    <img
+                        src={imageUrl}
+                        className="rounded-full"
+                        style={{
+                            width: '36px',
+                            height: '36px',
+                            objectFit: 'cover',
+                        }}
+                        onError={(e) => {
+                            e.currentTarget.src = '/logos/user_profile.png'
+                            e.currentTarget.onerror = null
+                        }}
+                    />
+                </div>
+                <div>{name}</div>
+            </div>
+            <div className="flex justify-start items-center uppercase">{symbol}</div>
+            <div className="flex justify-start items-center">{totalSales}</div>
+            <div className="flex justify-start items-center">{floor}</div>
+            <div className="flex justify-start items-center">{volume}</div>
+        </div>
     )
 }

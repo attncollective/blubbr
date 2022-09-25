@@ -1,7 +1,7 @@
-import NftCard from '../components/NftCard'
+import NftCard from '../../components/NftCard'
 import { useEffect, useState } from 'react'
-import useQuery from '../hooks/useQuery'
-import useFetch from '../hooks/useFetch'
+import useQuery from '../../hooks/useQuery'
+import useFetch from '../../hooks/useFetch'
 
 const CONTRACT_ADDRESS = '0x01c20350ad8f434bedf6ea901203ac4cf7bca295'
 const CHAIN = 'ethereum'
@@ -41,7 +41,7 @@ function getUrlImages(images) {
     } else return null
 }
 
-export default function Dashboard({}) {
+export default function NftportDashboard() {
     const [nfts, setNfts] = useState(null)
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -55,6 +55,16 @@ export default function Dashboard({}) {
     // )
 
     // if (data && !error && !loading) console.log(data) // NFTPorts
+
+    function excludeNull(nfts) {
+        let newNfts = []
+        for (const nft of nfts) {
+            if (nft.file_url != null) {
+                newNfts.push(nft)
+            }
+        }
+        return newNfts
+    }
 
     async function reFetch() {
         setLoading(true)
@@ -71,7 +81,7 @@ export default function Dashboard({}) {
             .then((res) => res.json())
             .then((data) => {
                 if (data && data.response == 'OK') {
-                    setNfts(nfts.concat(data.nfts))
+                    setNfts(nfts.concat(excludeNull(data.nfts)))
                     setContinuation(data.continuation)
                     setTotal(data.total)
                 } else {
@@ -97,7 +107,7 @@ export default function Dashboard({}) {
             .then((res) => res.json())
             .then((data) => {
                 if (data && data.response == 'OK') {
-                    setNfts(data.nfts)
+                    setNfts(excludeNull(data.nfts))
                     setContinuation(data.continuation)
                     setTotal(data.total)
                     console.log(data.nfts)
@@ -123,7 +133,7 @@ export default function Dashboard({}) {
         )
 
     return (
-        <div className=" w-full mt-24 ml-24 md:ml-64 xl:ml-80 mb-16">
+        <div className="w-full mt-24 ml-24 md:ml-64 xl:ml-80 mb-16">
             <div className="space-y-12 sm:grid sm:grid-cols-3 sm:gap-x-6 sm:gap-y-12 sm:space-y-0 lg:grid-cols-4 md:gap-x-8 2xl:grid-cols-5">
                 {/* - Icy Tools - */}
                 {/* {data &&
@@ -145,7 +155,7 @@ export default function Dashboard({}) {
                             <NftCard
                                 name={nft.name}
                                 tokenId={nft.token_id}
-                                symbol={null}
+                                address={nft.contract_address}
                                 rawUrl={nft.file_url}
                             />
                         </div>
