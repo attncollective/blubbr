@@ -1,20 +1,16 @@
 import useQuery from '../hooks/useQuery'
 import TrendingNFT from '../components/TrendingNFT'
+import { useState } from 'react'
 
-const TRENDING_COLLECTIONS = `
+const TRENDING_COLLECTIONS_ONE_HOUR = `
 query TrendingCollections {
-    trendingCollections(orderBy: SALES, orderDirection: DESC) {
+    trendingCollections(orderBy: SALES, orderDirection: DESC, timePeriod: ONE_HOUR) {
       edges {
         node {
           address
           ... on ERC721Contract {
             name
-            stats(
-                    timeRange: {
-                      gte: "2022-09-20T00:00:00.000Z"
-                      lt: "2022-09-21T00:00:00.000Z"
-                    }
-                  ) {
+            stats {
               totalSales
               average
               ceiling
@@ -22,34 +18,95 @@ query TrendingCollections {
               volume
             }
             symbol
+            unsafeOpenseaImageUrl
           }
         }
       }
     }
   }
 `
-const TokenImages = `
-# Query that looks up the images for BAYC#1
-query TokenImages {
-  token(
-    contractAddress: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
-    tokenId: "1,
-  ) {
-    ... on ERC721Token {
-      images {
-        url
-        width
-        height
-        mimeType
+
+const TRENDING_COLLECTIONS_TWELVE_HOURS = `
+query TrendingCollections {
+    trendingCollections(orderBy: SALES, orderDirection: DESC, timePeriod: TWELVE_HOURS) {
+      edges {
+        node {
+          address
+          ... on ERC721Contract {
+            name
+            stats {
+              totalSales
+              average
+              ceiling
+              floor
+              volume
+            }
+            symbol
+            unsafeOpenseaImageUrl
+          }
+        }
       }
     }
   }
-}
+`
+
+const TRENDING_COLLECTIONS_ONE_DAY = `
+query TrendingCollections {
+    trendingCollections(orderBy: SALES, orderDirection: DESC, timePeriod: ONE_DAY) {
+      edges {
+        node {
+          address
+          ... on ERC721Contract {
+            name
+            stats {
+              totalSales
+              average
+              ceiling
+              floor
+              volume
+            }
+            symbol
+            unsafeOpenseaImageUrl
+          }
+        }
+      }
+    }
+  }
+`
+
+const TRENDING_COLLECTIONS_SEVEN_DAYS = `
+query TrendingCollections {
+    trendingCollections(orderBy: SALES, orderDirection: DESC, timePeriod: SEVEN_DAYS) {
+      edges {
+        node {
+          address
+          ... on ERC721Contract {
+            name
+            stats {
+              totalSales
+              average
+              ceiling
+              floor
+              volume
+            }
+            symbol
+            unsafeOpenseaImageUrl
+          }
+        }
+      }
+    }
+  }
 `
 
 export default function NFT({}) {
+    // UI Hooks
+    const [timePeriod, setTimePeriod] = useState('ONE_DAY')
 
-    const { error, loading, data } = useQuery('https://graphql.icy.tools/graphql', TRENDING_COLLECTIONS) // Icy Tools
+    // Icy Tools Hooks
+    const { error, loading, data, refetch } = useQuery(
+        'https://graphql.icy.tools/graphql',
+        TRENDING_COLLECTIONS_ONE_DAY
+    )
 
     if (data && !error && !loading) console.log(data)
 
@@ -115,17 +172,23 @@ export default function NFT({}) {
                                 volume={collections.node.stats.volume}
                             />
                         </div>
-                    ))}
-                    </tbody>
-            </table>
-            </div>  
-            {loading && (
-                <div className="flex flex-col items-center mt-10">
-                    <h1>Loading...</h1>
+                    )}
+                    {!loading &&
+                        data &&
+                        data.data.trendingCollections.edges.map((collections) => (
+                            <div className="w-full" key={collections.node.address}>
+                                <TrendingNFT
+                                    name={collections.node.name}
+                                    symbol={collections.node.symbol}
+                                    totalSales={collections.node.stats.totalSales}
+                                    floor={collections.node.stats.floor}
+                                    volume={collections.node.stats.volume}
+                                    imageUrl={collections.node.unsafeOpenseaImageUrl}
+                                />
+                            </div>
+                        ))}
                 </div>
-            )}
-    
-        </div>
+            </div>
         </div>
     )
 }

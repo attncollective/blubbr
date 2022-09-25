@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 import { ApolloProvider } from '@apollo/client'
-import client from '../apollo-client'
+import apolloClient from '../apollo-client'
 import Layout from '../components/Layout'
 import { ThemeProvider } from 'next-themes'
 import {
@@ -17,9 +17,8 @@ import '@rainbow-me/rainbowkit/styles.css'
 
 // RAINBOW_KIT_STUFF: Configure the chains and generate the required connectors
 const { chains, provider } = configureChains(
-    [chain.polygon, chain.polygonMumbai],
+    [chain.polygonMumbai],
     [
-        alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_POLYGON_MAINNET_ALCHEMY_ID }),
         alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_POLYGON_MUMBAI_ALCHEMY_ID }),
         publicProvider(),
     ]
@@ -65,7 +64,7 @@ function MyApp({ Component, pageProps }) {
                         `,
                         }}
                     />
-                    <ApolloProvider client={client}>
+                    <ApolloProvider client={apolloClient}>
                         <Layout>
                             <Component {...pageProps} />
                         </Layout>
