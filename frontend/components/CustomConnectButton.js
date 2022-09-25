@@ -10,7 +10,7 @@ import { WalletIcon } from '@heroicons/react/24/outline'
 
 export default function CustomConnectButton({ toggleCreateProfileModal }) {
     const { address, isConnected } = useAccount()
-    const [login, { loading, isLoggedIn, hasProfile, profile }] = useLensAuth(address)
+    const [login, createPost, { loading, isLoggedIn, hasProfile, profile }] = useLensAuth(address)
 
     if (loading) {
         return <></>
