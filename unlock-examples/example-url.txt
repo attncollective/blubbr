@@ -1,0 +1,6 @@
+https://app.unlock-protocol.com/checkout?redirectUri={url}/nft&paywallConfig{urlencoding}
+
+two parts: redirectUri (should go to blubbr.xyz) and paywallConfig (generated from JSON doc in config.json)
+complete example using what's in config.json below; https://www.urlencoder.io/ was used to convert config.json to encoding seen below 
+
+https://app.unlock-protocol.com/checkout?redirectUri=https%3A%2F%2Fblubbr.xyz%2Ftrending_nft&paywallConfig=%7B%22locks%22%3A%7B%220x1e11135Db117D67915d33d6931Bb84F6F130dD55%22%3A%7B%22network%22%3A137%7D%7D%2C%22pessimistic%22%3Atrue%2C%22persistentCheckout%22%3Atrue%2C%22icon%22%3A%22https%3A%2F%2Flocksmith.unlock-protocol.com%2Flock%2F0x1e11135Db117D67915d33d6931Bb84F6F130dD55%2Ficon%22%7D
