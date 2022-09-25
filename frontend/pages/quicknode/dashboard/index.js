@@ -1,13 +1,16 @@
-import NftCard from '../../components/NftCard'
+import NftCard from '../../../components/NftCard'
 import { useEffect, useState } from 'react'
-import useQuery from '../../hooks/useQuery'
-import useFetch from '../../hooks/useFetch'
+import useQuery from '../../../hooks/useQuery'
+import useFetch from '../../../hooks/useFetch'
+import { useAccount } from 'wagmi'
 
-const CONTRACT_ADDRESS = '0x01c20350ad8f434bedf6ea901203ac4cf7bca295'
+const ADDRESS = '0x01c20350ad8f434bedf6ea901203ac4cf7bca295' // whale address
 const CHAIN = 'polygon'
 
 export default function QuicknodeDashboard({ preFetchedData }) {
-    const [data, setData] = useState(preFetchedData)
+    const { address, isConnected } = useAccount()
+
+    const [data, setData] = useState(null)
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(false)
 
@@ -34,7 +37,7 @@ export default function QuicknodeDashboard({ preFetchedData }) {
                 jsonrpc: '2.0',
                 method: 'qn_fetchNFTs',
                 params: {
-                    wallet: CONTRACT_ADDRESS,
+                    wallet: address,
                     page: pageNumber,
                     perPage: 10,
                 },
@@ -59,6 +62,18 @@ export default function QuicknodeDashboard({ preFetchedData }) {
     async function prevPage() {
         if (data.pageNumber <= 1) return
         await fetchData(data.pageNumber - 1)
+    }
+
+    useState(() => {
+        if (isConnected) fetchData(1)
+    }, [])
+
+    if (!error && !loading && data && data.assets.length == 0) {
+        return (
+            <div className="w-full mt-24 ml-24 md:ml-64 xl:ml-80 mb-16">
+                <div className="h-full w-full flex justify-center items-center">No NFTs</div>
+            </div>
+        )
     }
 
     return (
@@ -130,7 +145,7 @@ export async function getServerSideProps(context) {
     })
 
     const data = await provider.send('qn_fetchNFTs', {
-        wallet: CONTRACT_ADDRESS,
+        wallet: ADDRESS,
         // omitFields: ['provenance', 'traits'],
         page: 1,
         perPage: 10,

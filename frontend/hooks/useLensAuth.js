@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react'
-import { useSignMessage } from 'wagmi'
+import { useSignMessage, useSignTypedData, useSigner } from 'wagmi'
 import { gql, useLazyQuery, useMutation } from '@apollo/client'
 import { verifyMessage } from 'ethers/lib/utils'
 import { decodeJwt } from 'jose'
+import omitDeep from 'omit-deep'
+import { Contract, ethers, utils } from 'ethers'
+
+const LENS_HUB_CONTRACT = '0x60Ae865ee4C725cd04353b5AAb364553f56ceF82'
+const LENS_HUB_ABI = require('../constants/abis/lens-hub-contract-abi.json')
 
 const VERIFY = `
   query($request: VerifyRequest!) {
@@ -488,6 +493,39 @@ fragment ReferenceModuleFields on ReferenceModule {
 }
 `
 
+const CREATE_POST_TYPED_DATA = `
+mutation CreatePostTypedData($request: CreatePublicPostRequest!) {
+  createPostTypedData(request: $request) {
+    id
+    expiresAt
+    typedData {
+      types {
+        PostWithSig {
+          name
+          type
+        }
+      }
+      domain {
+        name
+        chainId
+        version
+        verifyingContract
+      }
+      value {
+        nonce
+        deadline
+        profileId
+        contentURI
+        collectModule
+        collectModuleInitData
+        referenceModule
+        referenceModuleInitData
+      }
+    }
+  }
+}
+`
+
 // basically if we have a URI we replace the gateway, otherwise we pass the url
 function getUrl(uriOrUrl) {
     if (!uriOrUrl || typeof uriOrUrl != 'string') return
@@ -504,6 +542,9 @@ function getUrl(uriOrUrl) {
 }
 
 export default function useLensAuth(address) {
+    // wagmi hooks
+    const { data: signer, isError, isLoading } = useSigner()
+
     // lens hooks
     const [verify, {}] = useLazyQuery(gql(VERIFY))
     const [generateChallenge, {}] = useLazyQuery(gql(GET_CHALLENGE))
@@ -512,6 +553,8 @@ export default function useLensAuth(address) {
     const [refreshAuthentication, {}] = useMutation(gql(REFRESH_AUTHENTICATION))
     const [getProfiles, {}] = useLazyQuery(gql(GET_PROFILES))
     const [getTimeline, {}] = useLazyQuery(gql(TIMELINE))
+    const [createPostTypedData, { error }] = useMutation(gql(CREATE_POST_TYPED_DATA))
+    const signTypeData = useSignTypedData()
 
     // UI
     const [loading, setLoading] = useState(false)
@@ -703,6 +746,80 @@ export default function useLensAuth(address) {
         }
     }
 
+    async function createPost(contentURI) {
+        let result
+        try {
+            result = await createPostTypedData({
+                variables: {
+                    request: {
+                        profileId: profile.id,
+                        contentURI: contentURI,
+                        collectModule: {
+                            freeCollectModule: {
+                                followerOnly: false,
+                            },
+                        },
+                        referenceModule: {
+                            followerOnlyReferenceModule: false,
+                        },
+                    },
+                },
+                fetchPolicy: 'no-cache',
+                onCompleted(data) {
+                    console.log(data)
+                },
+                onError(error) {
+                    console.log(error)
+                },
+            })
+        } catch (err) {
+            console.log(err)
+            return
+        }
+
+        if (!result || !result.data.createPostTypedData) {
+            return
+        }
+
+        const typedData = result.data.createPostTypedData.typedData
+        console.log('create post: typedData', typedData)
+
+        // sign the typed data
+        let signature
+        try {
+            signature = await signTypeData.signTypedDataAsync({
+                domain: omitDeep(typedData.domain, '__typename'),
+                types: omitDeep(typedData.types, '__typename'),
+                value: omitDeep(typedData.value, '__typename'),
+                onSuccess(data) {
+                    console.log('Success', data)
+                },
+            })
+        } catch (err) {
+            console.log(err)
+            return
+        }
+        const { v, r, s } = utils.splitSignature(signature)
+
+        const lensHub = new ethers.Contract(LENS_HUB_CONTRACT, LENS_HUB_ABI, signer)
+
+        const tx = await lensHub.postWithSig({
+            profileId: typedData.value.profileId,
+            contentURI: typedData.value.contentURI,
+            collectModule: typedData.value.collectModule,
+            collectModuleInitData: typedData.value.collectModuleInitData,
+            referenceModule: typedData.value.referenceModule,
+            referenceModuleInitData: typedData.value.referenceModuleInitData,
+            sig: {
+                v,
+                r,
+                s,
+                deadline: typedData.value.deadline,
+            },
+        })
+        console.log('create post: tx hash', tx.hash)
+    }
+
     async function getProfileTimeline() {
         setTimelineLoading(true)
         getTimeline({
@@ -738,8 +855,17 @@ export default function useLensAuth(address) {
         }
     }, [hasProfile])
 
+    useEffect(() => {
+        if (error) {
+            console.log(error.graphQLErrors)
+            console.log(error.clientErrors)
+            console.log(error.networkError)
+        }
+    }, [error])
+
     return [
         login,
+        createPost,
         {
             loading,
             isLoggedIn,
