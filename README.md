@@ -22,14 +22,14 @@ QuickNode's NFT API is used for gathering data about the currently signed in use
 The Graph is used to query data about ERC20 tokens held by the signed in user. 
 
 - Notifications
-Notifications are sent via EPNS for activity that occurs on attn.money. 
+Notifications are sent via EPNS for activity that occurs on blubbr 
 
 - Licensing
-Unlock could be used for NFT licensing to enable access to a paid tier of attn.money.
+Unlock could be used for NFT licensing to enable access to a paid tier of blubbr
 https://docs.unlock-protocol.com/tools/paywall/locking-page
 
-- RPCs
-QuickNode's endpoints are used for RPC and HTTP endpoints, where needed.
+- APIs
+QuickNode's API, NFT Port, Icy TOols
 
 ## Full Sponsor List (in order of priority)
 1. QuickNode
@@ -40,3 +40,4 @@ QuickNode's endpoints are used for RPC and HTTP endpoints, where needed.
 6. Polygon
 7. Aave
 8. LivePeer
+9. Superfluid
