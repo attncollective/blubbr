@@ -64,6 +64,7 @@ export default function NFT({}) {
         <div className="ml-24 px-64 py-36 ">
         <div className="content-center w-[76rem] py-2 px-22 border dark:border-gray-400 rounded-xl bg-gray-100 dark:bg-gray-850">
             <div className="flex dark:border-gray-400">     
+<<<<<<< HEAD
                  <head>
                   <script>
                     (function(d, s) {
@@ -93,6 +94,8 @@ export default function NFT({}) {
                       }
                   </script>
                  </head>
+=======
+>>>>>>> main
                  <table className="items-center text-sm table-fixed"> 
                  <thead className="flex text-xs text-gray-100 uppercase dark:text-gray">
                      <tr>

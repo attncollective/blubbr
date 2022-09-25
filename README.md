@@ -1,14 +1,15 @@
-# attnethglobal
-![attnmoney-ethglobal](https://user-images.githubusercontent.com/104535511/188544615-b3e15451-c459-4c30-b4d6-4a22f20b6e03.png)
+# blubbr
+![blubbui](https://user-images.githubusercontent.com/86300766/191803348-412224dc-d870-4656-a4ad-42f482d981ca.png)
+
 
 ## Tech Stack
-- Website hosted with React
+- Website hosted with NEXT
 
 - Blockchains
-attn.money is focused on mainnet for the MVP, but will include Polygon, Aave and possibly others depending on our progress.
+blubbr is focused on mainnet for the MVP, but will include Polygon, Aave and possibly others depending on our progress.
 
 - Authentication
-Current plan is to use Moralis/ Rainbow Kit for authentication. We could potentially use Sign-in With Ethereum (made by Spruce) as well. 
+Wagmi
 
 - Storage
 IPFS and Filecoin are used for image storage when needed. IPFS could be queried at random for NFT collection pictures, if desired.
@@ -34,11 +35,8 @@ QuickNode's endpoints are used for RPC and HTTP endpoints, where needed.
 1. QuickNode
 2. IPFS/ Filecoin
 3. The Graph
-4. Lens
+4. Unlock
 5. EPNS
 6. Polygon
 7. Aave
-8. Valist
-9. LivePeer
-10. Optimism 
-11. Spruce (Sign-in With Ethereum) 
+8. LivePeer
