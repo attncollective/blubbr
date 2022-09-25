@@ -1,6 +1,9 @@
 # blubbr
 ![blubbui](https://user-images.githubusercontent.com/86300766/191803348-412224dc-d870-4656-a4ad-42f482d981ca.png)
 
+![Screen Shot 2022-09-25 at 2 29 11 PM](https://user-images.githubusercontent.com/86300766/192159384-1d05db66-3f87-4fc6-b0f2-bb7f1928e9e7.png)
+![Screen Shot 2022-09-25 at 2 29 17 PM](https://user-images.githubusercontent.com/86300766/192159390-cf0cdb8e-9a3e-4e70-b21c-1128cdf458c8.png)
+![Screen Shot 2022-09-25 at 2 29 25 PM](https://user-images.githubusercontent.com/86300766/192159396-befd1784-1fe0-44a5-9848-9ebbc6f2abe5.png)
 
 ## Tech Stack
 - Website hosted with NEXT
