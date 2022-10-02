@@ -1,39 +1,11 @@
-import NftCard from '../../components/NftCard'
+import NftCard from '../../../components/NftCard'
 import { useEffect, useState } from 'react'
-import useQuery from '../../hooks/useQuery'
-import useFetch from '../../hooks/useFetch'
+import useQuery from '../../../hooks/useQuery'
+import useFetch from '../../../hooks/useFetch'
+import { useAccount } from 'wagmi'
 
 const CONTRACT_ADDRESS = '0x01c20350ad8f434bedf6ea901203ac4cf7bca295'
 const CHAIN = 'ethereum'
-
-const WALLET_TOKENS = `
-query WalletTokens {
-    wallet(address: "${CONTRACT_ADDRESS}") {
-        tokens {
-            edges {
-                node {
-                    tokenId
-                    contract {
-                        ... on ERC721Contract {
-                            name
-                            symbol
-                            address
-                        }
-                    }
-                    ... on ERC721Token {
-                        images {
-                            url
-                            width
-                            height
-                            mimeType
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-`
 
 function getUrlImages(images) {
     if (images && images.length) {
@@ -48,13 +20,7 @@ export default function NftportDashboard() {
     const [continuation, setContinuation] = useState(null)
     const [total, setTotal] = useState(null)
 
-    // const { error, loading, data } = useQuery('https://graphql.icy.tools/graphql', WALLET_TOKENS) // Icy Tools
-    // const { error, loading, data } = useFetch(
-    //     `https://api.nftport.xyz/v0/accounts/${CONTRACT_ADDRESS}?chain=ethereum&page_size=20`,
-    //     process.env.NEXT_PUBLIC_NFTPORT_API_KEY
-    // )
-
-    // if (data && !error && !loading) console.log(data) // NFTPorts
+    const { address, isConnected } = useAccount()
 
     function excludeNull(nfts) {
         let newNfts = []
@@ -75,7 +41,7 @@ export default function NftportDashboard() {
                 Authorization: process.env.NEXT_PUBLIC_NFTPORT_API_KEY,
             },
         }
-        const url = `https://api.nftport.xyz/v0/accounts/${CONTRACT_ADDRESS}?chain=${CHAIN}&include=metadata&page_size=20&con&continuation=${continuation}`
+        const url = `https://api.nftport.xyz/v0/accounts/${address}?chain=${CHAIN}&include=metadata&page_size=20&con&continuation=${continuation}`
 
         fetch(url, options)
             .then((res) => res.json())
@@ -101,7 +67,7 @@ export default function NftportDashboard() {
                 Authorization: process.env.NEXT_PUBLIC_NFTPORT_API_KEY,
             },
         }
-        const url = `https://api.nftport.xyz/v0/accounts/${CONTRACT_ADDRESS}?chain=${CHAIN}&include=metadata&page_size=20`
+        const url = `https://api.nftport.xyz/v0/accounts/${address}?chain=${CHAIN}&include=metadata&page_size=20`
 
         fetch(url, options)
             .then((res) => res.json())
@@ -135,19 +101,6 @@ export default function NftportDashboard() {
     return (
         <div className="w-full mt-24 ml-24 md:ml-64 xl:ml-80 mb-16">
             <div className="space-y-12 sm:grid sm:grid-cols-3 sm:gap-x-6 sm:gap-y-12 sm:space-y-0 lg:grid-cols-4 md:gap-x-8 2xl:grid-cols-5">
-                {/* - Icy Tools - */}
-                {/* {data &&
-                    data.data.wallet.tokens.edges.map((walletData) => (
-                        <div key={walletData.node.tokenId + walletData.node.contract.address}>
-                            <NftCard
-                                name={walletData.node.contract.name}
-                                tokenId={walletData.node.tokenId}
-                                symbol={null}
-                                rawUrl={getUrlImages(walletData.node.images)}
-                            />
-                        </div>
-                    ))} */}
-
                 {/* - NFTPorts - */}
                 {nfts &&
                     nfts.map((nft) => (

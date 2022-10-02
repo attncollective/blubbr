@@ -118,7 +118,7 @@ export default function NFT({}) {
         )
 
     return (
-        <div className="ml-24 px-64 py-36 ">
+        <div className="px-8 md:px-16 xl:pr-24 xl:pl-6 py-6 md:py-12 xl:py-14">
             {/* TimePeriod Selector */}
             <div className="z-20 grid grid-cols-4 h-12 w-96 mb-2 border rounded-xl border-gray-350 dark:border-gray-750 bg-gray-100 dark:bg-gray-850">
                 <button
@@ -191,7 +191,7 @@ export default function NFT({}) {
                 </button>
             </div>
 
-            <div className="w-[76rem] py-3 px-6 border border-gray-350 dark:border-gray-750 rounded-xl bg-gray-100 dark:bg-gray-850">
+            <div className="w-full py-3 px-6 border border-gray-350 dark:border-gray-750 rounded-xl bg-gray-100 dark:bg-gray-850">
                 {/* Upper Row */}
                 <div className="w-full h-16 pb-2 px-3 grid grid-cols-6 justify-start items-start font-bold text-lg text-black dark:text-white border-b border-gray-350 dark:border-gray-750">
                     <div className="col-span-2 h-full flex justify-start items-end">Name</div>

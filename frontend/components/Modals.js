@@ -79,7 +79,7 @@ export default function Modals({ showCreateProfileModal, toggleCreateProfileModa
             {showCreateProfileModal && (
                 <div
                     className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 z-50 w-full h-full min-h-full inset-0 justify-center items-center
-                 bg-black/50 dark:bg-black-70 backdrop-blur-sm"
+                 bg-black/50 dark:bg-black/70 backdrop-blur-sm"
                 >
                     {/* Unsuccess Alert messages */}
                     {error && (

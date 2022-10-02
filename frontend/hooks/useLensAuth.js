@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSignMessage, useSignTypedData, useSigner } from 'wagmi'
+import { useSignMessage, useSignTypedData, useSigner, useAccount } from 'wagmi'
 import { gql, useLazyQuery, useMutation } from '@apollo/client'
 import { verifyMessage } from 'ethers/lib/utils'
 import { decodeJwt } from 'jose'
@@ -541,9 +541,10 @@ function getUrl(uriOrUrl) {
     return url
 }
 
-export default function useLensAuth(address) {
+export default function useLensAuth() {
     // wagmi hooks
     const { data: signer, isError, isLoading } = useSigner()
+    const { address, isConnected } = useAccount()
 
     // lens hooks
     const [verify, {}] = useLazyQuery(gql(VERIFY))
@@ -556,12 +557,13 @@ export default function useLensAuth(address) {
     const [createPostTypedData, { error }] = useMutation(gql(CREATE_POST_TYPED_DATA))
     const signTypeData = useSignTypedData()
 
-    // UI
-    const [loading, setLoading] = useState(false)
+    // Login
     const [isLoggedIn, setIsLoggedIn] = useState(false)
-    const [hasProfile, setHasProfile] = useState(false)
+    const [loadingLogin, setloadingLogin] = useState(false)
 
     // Profile
+    const [hasProfile, setHasProfile] = useState(false)
+    const [loadingProfile, setLoadingProfile] = useState(false)
     const [profile, setProfile] = useState({
         id: null,
         handle: null,
@@ -577,8 +579,17 @@ export default function useLensAuth(address) {
     const [timelineLoading, setTimelineLoading] = useState(false)
 
     // fetch from the lens api to know if the user 'auth_token' is valid
-    // -> if it is check if he already have a profile
     async function verifyAuth() {
+        setloadingLogin(true)
+
+        // no 'auth_token' means not logged in
+        if (!localStorage.getItem('auth_token')) {
+            setIsLoggedIn(false)
+            setloadingLogin(false)
+            return
+        }
+
+        // else we verify the 'auth_token'
         verify({
             variables: {
                 request: {
@@ -589,21 +600,22 @@ export default function useLensAuth(address) {
             .then((data) => {
                 if (data.data?.verify) {
                     setIsLoggedIn(true)
-                    setLoading(false)
+                    setloadingLogin(false)
                 } else {
                     setIsLoggedIn(false)
-                    setLoading(false)
+                    setloadingLogin(false)
                 }
             })
             .catch((err) => {
                 console.log(err)
                 setIsLoggedIn(false)
-                setLoading(false)
+                setloadingLogin(false)
             })
     }
 
     // check if the user have at least 1 profile and take that as the default
     async function checkHasProfile() {
+        setLoadingProfile(true)
         getProfiles({
             variables: {
                 request: {
@@ -628,16 +640,16 @@ export default function useLensAuth(address) {
                     }
                     setProfile(newProfile)
                     setHasProfile(true)
-                    setLoading(false)
+                    setLoadingProfile(false)
                 } else {
                     setHasProfile(false)
-                    setLoading(false)
+                    setLoadingProfile(false)
                 }
             })
             .catch((err) => {
                 console.log(err)
                 setHasProfile(false)
-                setLoading(false)
+                setLoadingProfile(false)
             })
     }
 
@@ -844,16 +856,15 @@ export default function useLensAuth(address) {
     }
 
     useEffect(() => {
-        setLoading(true)
         verifyAuth()
         checkHasProfile()
     }, [])
 
-    useEffect(() => {
-        if (hasProfile && !timelineLoading) {
-            getProfileTimeline()
-        }
-    }, [hasProfile])
+    // useEffect(() => {
+    //     if (hasProfile && !timelineLoading) {
+    //         getProfileTimeline()
+    //     }
+    // }, [hasProfile])
 
     useEffect(() => {
         if (error) {
@@ -863,16 +874,15 @@ export default function useLensAuth(address) {
         }
     }, [error])
 
-    return [
+    return {
         login,
         createPost,
-        {
-            loading,
-            isLoggedIn,
-            hasProfile,
-            profile,
-            timeline,
-            timelineLoading,
-        },
-    ]
+        isLoggedIn,
+        loadingLogin,
+        hasProfile,
+        loadingProfile,
+        profile,
+        timeline,
+        timelineLoading,
+    }
 }
