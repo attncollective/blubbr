@@ -1,12 +1,7 @@
 import Image from 'next/image'
-import Link from 'next/link'
-import { useTheme } from 'next-themes'
 import CustomConnectButton from './CustomConnectButton'
-import LensLoginButton from './LensLoginButton'
 
-export default function Navbar({ toggleCreateProfileModal }) {
-    const { resolvedTheme } = useTheme()
-
+export default function Navbar() {
     return (
         <nav className="px-4 sm:px-6 lg:px-8 xl:px-10 fixed w-full h-16 z-20 top-0 left-0 bg-gray-850 xs:bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-850 dark:to-gray-750 xs:shadow-none shadow-2xl">
             <div className="flex flex-no-wrap w-full h-full justify-between xs:justify-end items-center">
@@ -19,12 +14,20 @@ export default function Navbar({ toggleCreateProfileModal }) {
                         height="76"
                     />
                 </div>
+                {/* <form onSubmit={''} className="z-30 rounded-lg shadow-lg dark:shadow-xl mr-[500px]">
+                    <input
+                        className="h-12 w-[490px] text-start bg-gray-100 dark:bg-gray-850 border-gray-100 dark:border-gray-850 rounded-lg"
+                        name="address"
+                        id="address"
+                        type="text"
+                        placeholder="Search Tokens, Addresses or NFTs"
+                        required={true}
+                        value={''}
+                        onChange={(e) => {}}
+                    />
+                </form> */}
                 <div className="flex xs:order-2">
-                    <CustomConnectButton toggleCreateProfileModal={toggleCreateProfileModal} />
-                    {/* <LensLoginButton
-                        className="ml-3"
-                        toggleCreateProfileModal={toggleCreateProfileModal}
-                    /> */}
+                    <CustomConnectButton />
                     <button
                         data-collapse-toggle="navbar-sticky"
                         type="button"

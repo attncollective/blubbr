@@ -1,7 +1,6 @@
 import { utils } from 'ethers'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import TokenCard from '../components/TokenCard'
-import { useAccount } from 'wagmi'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 
 const ADDRESS = '0x01c20350ad8f434bedf6ea901203ac4cf7bca295' // whale address
@@ -19,12 +18,10 @@ function displayAmount(amount) {
 }
 
 export default function Tokens() {
-    // wagmi
-    const { address, isConnected } = useAccount()
-
     // UI
     const [totalAmount, setTotalAmount] = useState(0)
     const [showHiddenTokens, setShowHiddenTokens] = useState(false)
+    const [address, setAddress] = useState('')
     const [data, setData] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
@@ -37,9 +34,13 @@ export default function Tokens() {
         setTotalAmount((prev) => prev + amount)
     }
 
+    function handleSubmit(e) {
+        e.preventDefault()
+        fetchData()
+    }
+
     async function fetchData() {
         setLoading(true)
-        setTotalAmount(0)
 
         const options = {
             method: 'POST',
@@ -65,21 +66,35 @@ export default function Tokens() {
             })
             .catch((err) => {
                 console.log(err)
-                setError('Tokens: error fethcing data')
+                setError('Search_tokens: error fethcing data')
                 setLoading(false)
             })
     }
 
-    useEffect(() => {
-        if (isConnected) fetchData()
-    }, [isConnected])
-
-    if (!isConnected) {
+    if (!address || !data) {
         return (
             <div className="w-full min-h-screen flex justify-center items-center">
-                <div className="z-20 text-xl font-light text-gray-800 dark:text-gray-100">
-                    Connect your wallet to see your token
-                </div>
+                <form onSubmit={handleSubmit} className="z-30 rounded-lg shadow-lg dark:shadow-xl">
+                    <input
+                        className="h-12 w-96 text-start bg-gray-100 dark:bg-gray-850 border-gray-100 dark:border-gray-850 rounded-l-lg"
+                        name="address"
+                        id="address"
+                        type="text"
+                        placeholder="Search Tokens"
+                        required={true}
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                    />
+                    <button
+                        type="submit"
+                        className="h-12 rounded-r-lg px-6 py-2 text-white dark:text-black font-light text-base text-center
+                                        bg-gradient-to-r from-purple-500/80 via-pink-500/80 to-yellow-500/80 dark:from-purple-300/80 dark:via-pink-300/80 dark:to-yellow-300/80"
+                    >
+                        <div className=" flex flex-row justify-center items-center">
+                            <span>Search</span>
+                        </div>
+                    </button>
+                </form>
             </div>
         )
     }

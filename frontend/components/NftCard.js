@@ -103,13 +103,12 @@ export default function NftCard({ name, tokenId, symbol, rawUrl, address }) {
     }
 
     return (
-        <div className="flex flex-col w-56 h-80 z-10 rounded-lg shadow-xl bg-black/[18%] dark:bg-white/[10%]">
+        <div className="flex flex-col w-72 h-96 sm:w-56 sm:h-80 z-10 rounded-lg shadow-xl bg-black/[18%] dark:bg-white/[10%]">
             {url ? (
-                <div className="w-56 h-56">
+                <div className="w-72 h-72 sm:w-56 sm:h-56">
                     <img
                         src={url}
-                        className="rounded-t-lg shadow-lg"
-                        style={{ width: '224px', height: '224px', objectFit: 'cover' }}
+                        className="w-72 h-72 sm:w-56 sm:h-56 object-cover rounded-t-lg shadow-lg"
                         onError={fetchDataFromNftPort}
                         onLoad={(e) => {
                             if (e.currentTarget.src == '/images/image_not_found.png') {
@@ -125,10 +124,10 @@ export default function NftCard({ name, tokenId, symbol, rawUrl, address }) {
                     />
                 </div>
             ) : (
-                <div className="w-56 h-56">
+                <div className="w-72 h-72 sm:w-56 sm:h-56">
                     <img
                         src="/images/image_not_found.png"
-                        className="rounded-t-lg shadow-lg dark:invert-[90%]"
+                        className="w-72 h-72 sm:w-56 sm:h-56 object-cover rounded-t-lg shadow-lg dark:invert-[90%]"
                         style={{ width: '224px', height: '224px', objectFit: 'cover' }}
                     />
                 </div>

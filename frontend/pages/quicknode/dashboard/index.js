@@ -7,7 +7,7 @@ import { useAccount } from 'wagmi'
 const ADDRESS = '0x01c20350ad8f434bedf6ea901203ac4cf7bca295' // whale address
 const CHAIN = 'polygon'
 
-export default function QuicknodeDashboard({ preFetchedData }) {
+export default function QuicknodeDashboard() {
     const { address, isConnected } = useAccount()
 
     const [data, setData] = useState(null)
@@ -68,22 +68,57 @@ export default function QuicknodeDashboard({ preFetchedData }) {
         if (isConnected) fetchData(1)
     }, [])
 
-    if (!error && !loading && data && data.assets.length == 0) {
+    if (!isConnected) {
         return (
-            <div className="w-full mt-24 ml-24 md:ml-64 xl:ml-80 mb-16">
-                <div className="h-full w-full flex justify-center items-center">No NFTs</div>
+            <div className="w-full min-h-screen flex justify-center items-center">
+                <div className="z-20 text-xl font-light text-gray-800 dark:text-gray-100">
+                    Connect your wallet to display NFTs
+                </div>
+            </div>
+        )
+    }
+
+    if (loading) {
+        return (
+            <div className="w-full min-h-screen flex justify-center items-center">
+                <div className="z-20 text-xl font-light text-gray-800 dark:text-gray-100">
+                    Loading...
+                </div>
+            </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <div className="w-full min-h-screen flex justify-center items-center">
+                <div className="z-20 text-xl font-light text-gray-800 dark:text-gray-100">
+                    {error}
+                </div>
+            </div>
+        )
+    }
+
+    if (data && data.assets.length == 0) {
+        return (
+            <div className="w-full min-h-screen flex justify-center items-center">
+                <div className="z-20 text-xl font-light text-gray-800 dark:text-gray-100">
+                    You don't own any NFTs
+                </div>
             </div>
         )
     }
 
     return (
-        <div className="w-full mt-24 ml-24 md:ml-64 xl:ml-80 mb-16">
-            <div className="space-y-12 sm:grid sm:grid-cols-3 sm:gap-x-6 sm:gap-y-12 sm:space-y-0 lg:grid-cols-4 md:gap-x-8 2xl:grid-cols-5">
-                {/* - Quicknode - */}
+        <div className="flex flex-col my-10">
+            {/* - NFT Grid - */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-y-8">
                 {data &&
                     !loading &&
                     data.assets.map((nft) => (
-                        <div key={nft.collectionAddress + nft.collectionTokenId}>
+                        <div
+                            className="flex justify-center items-center"
+                            key={nft.collectionAddress + nft.collectionTokenId}
+                        >
                             <NftCard
                                 name={nft.collectionName}
                                 tokenId={nft.collectionTokenId}
@@ -93,8 +128,10 @@ export default function QuicknodeDashboard({ preFetchedData }) {
                         </div>
                     ))}
             </div>
+
+            {/* - Page Selector - */}
             {data && !loading && (
-                <div className="flex flex-col items-center mt-10">
+                <div className="flex flex-col items-center mt-14">
                     <span className="text-sm text-gray-700 dark:text-gray-400 mb-4">
                         Showing{' '}
                         <span className="font-semibold text-gray-900 dark:text-white">
@@ -130,30 +167,4 @@ export default function QuicknodeDashboard({ preFetchedData }) {
             )}
         </div>
     )
-}
-
-export async function getServerSideProps(context) {
-    const ethers = require('ethers')
-    require('dotenv').config()
-
-    const sampleEndpointName = process.env.SAMPLE_ENDPOINT_NAME
-    const quicknodeKey = process.env.QUICKNODE_KEY
-
-    const provider = new ethers.providers.JsonRpcProvider({
-        url: `https://${sampleEndpointName}.discover.quiknode.pro/${quicknodeKey}/`,
-        headers: { 'x-qn-api-version': 1 },
-    })
-
-    const data = await provider.send('qn_fetchNFTs', {
-        wallet: ADDRESS,
-        // omitFields: ['provenance', 'traits'],
-        page: 1,
-        perPage: 10,
-    })
-
-    return {
-        props: {
-            preFetchedData: data,
-        },
-    }
 }

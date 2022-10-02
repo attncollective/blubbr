@@ -19,8 +19,12 @@ module.exports = {
                 'modals-dark-2': '#202226',
                 'modals-dark-3': '#161719',
                 'gray-350': '#B7BCC5',
+                'gray-450': '#848B98',
                 'gray-750': '#2B3544',
                 'gray-850': '#18212F',
+                'purple-350': '#CC9CFD',
+                'pink-350': '#F78DC5',
+                'yellow-350': '#FDE047',
             },
             backgroundImage: {
                 darkImage: `url('/images/blue_gold_background.webp')`,

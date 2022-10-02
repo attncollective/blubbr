@@ -14,6 +14,7 @@ import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import '@rainbow-me/rainbowkit/styles.css'
+import LensProvider from '../context/LensProvider'
 
 // RAINBOW_KIT_STUFF: Configure the chains and generate the required connectors
 const { chains, provider } = configureChains(
@@ -65,9 +66,11 @@ function MyApp({ Component, pageProps }) {
                         }}
                     />
                     <ApolloProvider client={apolloClient}>
-                        <Layout>
-                            <Component {...pageProps} />
-                        </Layout>
+                        <LensProvider>
+                            <Layout>
+                                <Component {...pageProps} />
+                            </Layout>
+                        </LensProvider>
                     </ApolloProvider>
                 </RainbowKitProvider>
             </WagmiConfig>
