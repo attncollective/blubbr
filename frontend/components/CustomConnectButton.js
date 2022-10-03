@@ -73,6 +73,7 @@ export default function CustomConnectButton() {
                                             layout="fixed"
                                             width={16}
                                             height={16}
+                                            alt=""
                                         />
                                         <span className="ml-1.5">Login</span>
                                     </button>
@@ -92,6 +93,7 @@ export default function CustomConnectButton() {
                                             layout="fixed"
                                             width={16}
                                             height={16}
+                                            alt=""
                                         />
                                         <span className="ml-1.5">Create Profile</span>
                                     </button>
@@ -149,6 +151,7 @@ export default function CustomConnectButton() {
                                                     height: 44,
                                                     objectFit: 'cover',
                                                 }}
+                                                alt=""
                                                 onError={(e) => {
                                                     e.currentTarget.src = '/logos/user_profile.png'
                                                     e.currentTarget.onerror = null

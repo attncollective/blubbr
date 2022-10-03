@@ -92,6 +92,7 @@ export default function TokenCard({
                                             height: '40px',
                                             objectFit: 'cover',
                                         }}
+                                        alt=""
                                     />
                                 </div>
                             )

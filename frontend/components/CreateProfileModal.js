@@ -40,6 +40,7 @@ export default function CreateProfileModal({ showCreateProfileModal, setShowCrea
                             layout="fixed"
                             width={16}
                             height={16}
+                            alt=""
                         />
                         <span className="ml-1">Create Profile</span>
                     </div>

@@ -175,6 +175,7 @@ export default function Feed() {
                                         height: 224,
                                         objectFit: 'cover',
                                     }}
+                                    alt=""
                                     onError={(e) => {
                                         e.currentTarget.src = '/logos/user_profile.png'
                                         e.currentTarget.onerror = null
@@ -272,6 +273,7 @@ export default function Feed() {
                                         {imageURL && (
                                             <img
                                                 src={imageURL}
+                                                alt=""
                                                 className="max-h-[160px] max-w-[125px] h-auto w-auto mt-1 rounded-md"
                                             />
                                         )}
@@ -337,6 +339,7 @@ export default function Feed() {
                                                 height: '48px',
                                                 objectFit: 'cover',
                                             }}
+                                            alt=""
                                             onError={(e) => {
                                                 e.currentTarget.src = '/logos/user_profile.png'
                                                 e.currentTarget.onerror = null
@@ -378,6 +381,7 @@ export default function Feed() {
                                                             : '/images/file_not_found.jpeg'
                                                     }
                                                     className="max-h-[512px] max-w-[1024px] h-auto w-auto rounded-xl"
+                                                    alt=""
                                                     onError={(e) => {
                                                         e.currentTarget.src =
                                                             '/images/file_not_found.jpeg'

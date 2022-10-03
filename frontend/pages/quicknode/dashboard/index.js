@@ -112,7 +112,7 @@ export default function QuicknodeDashboard() {
         return (
             <div className="w-full min-h-screen flex justify-center items-center">
                 <div className="z-20 text-xl font-light text-gray-800 dark:text-gray-100">
-                    You don't own any NFTs
+                    You don&apos;t own any NFTs
                 </div>
             </div>
         )
