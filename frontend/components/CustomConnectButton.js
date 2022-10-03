@@ -1,8 +1,5 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
-import { useAccount } from 'wagmi'
-import useLensAuth from '../hooks/useLensAuth'
 import { WalletIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import useLensAuthentication from '../hooks/useLensAuthentication'
 import useLensProfile from '../hooks/useLensProfile'

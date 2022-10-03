@@ -4,9 +4,10 @@ export default function useQuery(url, query) {
     const [data, setData] = useState(null)
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [loadingRefetch, setLoadingRefetch] = useState(false)
 
     async function refetch(query) {
-        setLoading(true)
+        setLoadingRefetch(true)
         fetch(url, {
             method: 'POST',
             headers: {
@@ -19,9 +20,12 @@ export default function useQuery(url, query) {
             .then((res) => res.json())
             .then((data) => {
                 setData(data)
-                setLoading(false)
+                setLoadingRefetch(false)
             })
-            .catch((err) => setError(err))
+            .catch((err) => {
+                setError(err)
+                setLoadingRefetch(false)
+            })
     }
 
     useEffect(() => {
@@ -40,8 +44,11 @@ export default function useQuery(url, query) {
                 setData(data)
                 setLoading(false)
             })
-            .catch((err) => setError(err))
+            .catch((err) => {
+                setError(err)
+                setLoading(false)
+            })
     }, [])
 
-    return { error, loading, data, refetch }
+    return { error, loading, data, refetch, loadingRefetch }
 }

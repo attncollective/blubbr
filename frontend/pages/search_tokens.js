@@ -66,7 +66,7 @@ export default function Tokens() {
             })
             .catch((err) => {
                 console.log(err)
-                setError('Search_tokens: error fethcing data')
+                setError('Search_tokens: error fetching data')
                 setLoading(false)
             })
     }

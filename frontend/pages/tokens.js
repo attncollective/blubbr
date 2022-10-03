@@ -20,7 +20,7 @@ function displayAmount(amount) {
 
 export default function Tokens() {
     // wagmi
-    const { address, isConnected } = useAccount()
+    const { address, isConnected, isConnecting } = useAccount()
 
     // UI
     const [totalAmount, setTotalAmount] = useState(0)
@@ -28,6 +28,9 @@ export default function Tokens() {
     const [data, setData] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
+
+    // tells when the page is mounted
+    const [mounted, setMounted] = useState(false)
 
     function toggleShowHiddenTokens() {
         setShowHiddenTokens((prev) => !prev)
@@ -70,25 +73,31 @@ export default function Tokens() {
             })
     }
 
+    // fetch the data once the user is connected
     useEffect(() => {
         if (isConnected) fetchData()
     }, [isConnected])
+
+    // set mounted once the page is mounted
+    useEffect(() => {
+        if (!mounted) setMounted(true)
+    }, [mounted])
+
+    if (loading || isConnecting || !mounted) {
+        return (
+            <div className="w-full min-h-screen flex justify-center items-center">
+                <div className="z-20 text-xl font-light text-gray-800 dark:text-gray-100">
+                    Loading...
+                </div>
+            </div>
+        )
+    }
 
     if (!isConnected) {
         return (
             <div className="w-full min-h-screen flex justify-center items-center">
                 <div className="z-20 text-xl font-light text-gray-800 dark:text-gray-100">
                     Connect your wallet to see your token
-                </div>
-            </div>
-        )
-    }
-
-    if (loading) {
-        return (
-            <div className="w-full min-h-screen flex justify-center items-center">
-                <div className="z-20 text-xl font-light text-gray-800 dark:text-gray-100">
-                    Loading...
                 </div>
             </div>
         )

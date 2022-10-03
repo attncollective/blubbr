@@ -216,7 +216,7 @@ export default function Feed() {
                             </div>
                         </div>
                         {/* Follow Button */}
-                        {hasProfile && (
+                        {/* {hasProfile && (
                             <button
                                 className="absolute flex flex-row justify-center items-center top-2 right-2
                     text-green-600 dark:text-green-400/80 bg-green-100/50 dark:bg-green-900/50 border rounded-md px-3 py-1.5 border-green-600 dark:border-green-400/80"
@@ -224,17 +224,17 @@ export default function Feed() {
                                 <UserPlusIcon className="w-5 h-5 mr-1 font-semibold" />{' '}
                                 <span className="text-sm font-semibold">Follow</span>
                             </button>
-                        )}
+                        )} */}
                     </div>
                 </div>
 
                 {/* Create Post */}
                 <div className="min-h-52 mb-8 bg-gray-100 dark:bg-gray-850 border border-gray-350 dark:border-gray-750 rounded-xl shadow-lg dark:shadow-xl">
                     <form onSubmit={handleSubmit} className="">
-                        <div className="flex flex-col justify-start items-start m-5">
+                        <div className="flex flex-col justify-start items-start m-4">
                             {/* - Text Input - */}
                             <textarea
-                                className="z-10 h-28 w-full text-start bg-gray-100 dark:bg-gray-850 border border-gray-350 dark:border-gray-750 rounded-lg"
+                                className="z-10 h-28 w-full text-start bg-white/50 dark:bg-black/30 border border-gray-350 dark:border-gray-750 rounded-lg"
                                 style={{ resize: 'none' }}
                                 name="content"
                                 id="content"
@@ -262,7 +262,7 @@ export default function Feed() {
                                                 required={false}
                                                 onChange={captureFile}
                                             />
-                                            <PhotoIcon className="w-8 h-8" />
+                                            <PhotoIcon className="w-7 h-7" />
                                             {imageURL && (
                                                 <span className="text-xs font-semibold ml-1">
                                                     Image Selected
@@ -280,21 +280,21 @@ export default function Feed() {
                                     {/* - GIF Input  - */}
                                     <div className="z-10">
                                         <label className="cursor-pointer text-gray-600 dark:text-gray-400 hover:text-black hover:dark:text-white">
-                                            <GifIcon className="w-8 h-8" />
+                                            <GifIcon className="w-7 h-7" />
                                         </label>
                                     </div>
 
                                     {/* - Generic Input  - */}
                                     <div className="z-10">
                                         <label className="cursor-pointer text-gray-600 dark:text-gray-400 hover:text-black hover:dark:text-white">
-                                            <DocumentPlusIcon className="w-7 h-7" />
+                                            <DocumentPlusIcon className="w-6 h-6" />
                                         </label>
                                     </div>
 
                                     {/* - Something else  - */}
                                     <div className="z-10">
-                                        <label className="cursor-pointer text-gray-600 dark:text-gray-4 00 hover:text-black hover:dark:text-white">
-                                            <GlobeAltIcon className="w-7 h-7" />
+                                        <label className="cursor-pointer text-gray-600 dark:text-gray-400 hover:text-black hover:dark:text-white">
+                                            <GlobeAltIcon className="w-6 h-6" />
                                         </label>
                                     </div>
                                 </div>

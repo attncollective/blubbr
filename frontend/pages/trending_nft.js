@@ -103,19 +103,40 @@ export default function NFT({}) {
     const [timePeriod, setTimePeriod] = useState('ONE_DAY')
 
     // Icy Tools Hooks
-    const { error, loading, data, refetch } = useQuery(
+    const { error, loading, data, refetch, loadingRefetch } = useQuery(
         'https://graphql.icy.tools/graphql',
         TRENDING_COLLECTIONS_ONE_DAY
     )
 
-    if (data && !error && !loading) console.log(data)
-
-    if (error)
+    if (loading) {
         return (
-            <div className="mt-20 ml-36 md:ml-64 xl:ml-88 mb-16">
-                <h1>{error}</h1>
+            <div className="w-full min-h-screen flex justify-center items-center">
+                <div className="z-20 text-xl font-light text-gray-800 dark:text-gray-100">
+                    Loading...
+                </div>
             </div>
         )
+    }
+
+    if (error) {
+        return (
+            <div className="w-full min-h-screen flex justify-center items-center">
+                <div className="z-20 text-xl font-light text-gray-800 dark:text-gray-100">
+                    {error}
+                </div>
+            </div>
+        )
+    }
+
+    if (data && data.length == 0) {
+        return (
+            <div className="w-full min-h-screen flex justify-center items-center">
+                <div className="z-20 text-xl font-light text-gray-800 dark:text-gray-100">
+                    No trending NFTs?
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="px-8 md:px-16 xl:pr-24 xl:pl-6 py-6 md:py-12 xl:py-14">
@@ -202,27 +223,27 @@ export default function NFT({}) {
                 </div>
 
                 {/* Trending NFT Row */}
-                <div className="w-full px-3">
-                    {loading && (
-                        <div className="w-full h-12 flex justify-center items-center">
-                            Loading...
-                        </div>
-                    )}
-                    {!loading &&
-                        data &&
-                        data.data.trendingCollections.edges.map((collections) => (
-                            <div className="w-full" key={collections.node.address}>
-                                <TrendingNFT
-                                    name={collections.node.name}
-                                    symbol={collections.node.symbol}
-                                    totalSales={collections.node.stats.totalSales}
-                                    floor={collections.node.stats.floor}
-                                    volume={collections.node.stats.volume}
-                                    imageUrl={collections.node.unsafeOpenseaImageUrl}
-                                />
-                            </div>
-                        ))}
-                </div>
+                {loadingRefetch ? (
+                    <div className="w-full px-3 py-3 flex justify-center items-center">
+                        Loading...
+                    </div>
+                ) : (
+                    <div className="w-full px-3">
+                        {data &&
+                            data.data.trendingCollections.edges.map((collections) => (
+                                <div className="w-full" key={collections.node.address}>
+                                    <TrendingNFT
+                                        name={collections.node.name}
+                                        symbol={collections.node.symbol}
+                                        totalSales={collections.node.stats.totalSales}
+                                        floor={collections.node.stats.floor}
+                                        volume={collections.node.stats.volume}
+                                        imageUrl={collections.node.unsafeOpenseaImageUrl}
+                                    />
+                                </div>
+                            ))}
+                    </div>
+                )}
             </div>
         </div>
     )
