@@ -1,18 +1,20 @@
-import { utils } from 'ethers'
 import { useState, useEffect } from 'react'
 import { useAccount } from 'wagmi'
-import useLensAuth from '../hooks/useLensAuth'
-import getRandomImage from '../utils/getRandomImage'
 import sliceAddress from '../utils/sliceAddress'
-import { PencilSquareIcon, PhotoIcon, UserPlusIcon } from '@heroicons/react/24/outline'
-import { gql, useLazyQuery, useQuery } from '@apollo/client'
-import { Web3Storage, File } from 'web3.storage'
-import { v4 as uuidv4 } from 'uuid'
+import {
+    DocumentPlusIcon,
+    GifIcon,
+    GlobeAltIcon,
+    PencilSquareIcon,
+    PhotoIcon,
+    UserPlusIcon,
+} from '@heroicons/react/24/outline'
 import useLensTimeline from '../hooks/useLensTimeline'
 import useLensAuthentication from '../hooks/useLensAuthentication'
 import useLensProfile from '../hooks/useLensProfile'
+import useLensPublication from '../hooks/useLensPublication'
+import { getExtension } from '../utils/handleExtension'
 
-// const ADDRESS = '0x81617079A419ab4562b29A92181402BdF389a1fA' // my address
 const ADDRESS = '0x01c20350ad8f434bedf6ea901203ac4cf7bca295' // whale address
 
 // basically if we have a URI we replace the gateway, otherwise we pass the url
@@ -38,118 +40,76 @@ function displayPostTime(createdAt) {
 
 export default function Feed() {
     // wagmi hooks
-    const { address, isConnected } = useAccount()
+    const { address, isConnected, isConnecting } = useAccount()
 
     // Custom hooks
     const { loading: loadingLogin, isLoggedIn, login } = useLensAuthentication()
     const { loading: loadingProfile, hasProfile, profile } = useLensProfile()
     const { timeline, loading: loadingTimeline, error } = useLensTimeline()
+    const { createPost } = useLensPublication()
 
     // Post Form
     const [content, setContent] = useState('')
-    const [image, setImage] = useState('')
+    const [imageURL, setImageURL] = useState(null)
+    const [imageBuffer, setImageBuffer] = useState(null)
+    const [imageExtension, setImageExtension] = useState(null)
 
-    // UI
-    const [ensAvatar, setEnsAvatar] = useState(getRandomImage())
+    function captureFile(event) {
+        if (event.target.files[0]) {
+            event.preventDefault()
 
-    function makeStorageClient() {
-        return new Web3Storage({ token: process.env.NEXT_PUBLIC_WEB3STORAGE_TOKEN })
-    }
+            // check the extension - only images allowed
+            const fileExtension = getExtension(event.target.files[0].name)
+            if (!['jpeg', 'png', 'webp', 'tiff'].includes(fileExtension)) {
+                console.log('CaptureFile: File must be an image')
+                return
+            }
 
-    function getFiles() {
-        const fileInput = document.querySelector('input[type="file"]')
-        return fileInput.files
-    }
+            // set the ImageURL to display the image
+            setImageURL(URL.createObjectURL(event.target.files[0]))
 
-    async function storeFiles(files) {
-        const client = makeStorageClient()
-        const cid = await client.put(files)
-        console.log('stored files with cid:', cid)
-        return cid
+            // set the Buffer to upload it to IPFS
+            const reader = new FileReader()
+            reader.readAsArrayBuffer(event.target.files[0])
+            reader.addEventListener('load', () => {
+                setImageBuffer(reader.result)
+            })
+
+            // set the imageExtension
+            setImageExtension(fileExtension)
+        }
     }
 
     async function handleSubmit(e) {
         e.preventDefault()
 
-        const files = getFiles()
-        if (files.length >= 1) {
-            try {
-                const imageCid = await storeFiles(files)
-
-                if (imageCid) {
-                    console.log(content)
-                    console.log('https://ipfs.io/ipfs/' + imageCid + '/' + image)
-
-                    const uuid = uuidv4()
-
-                    const metadata = {
-                        version: '2.0.0',
-                        mainContentFocus: 'TEXT_ONLY',
-                        metadata_id: uuid,
-                        description: content,
-                        locale: 'en-US',
-                        content: content,
-                        external_url: null,
-                        image: 'ipfs://' + imageCid + '/' + image,
-                        imageMimeType: null,
-                        name: 'Post by @' + profile.handle,
-                        attributes: [],
-                        tags: ['using_api_examples'],
-                        appId: 'blubber_test',
-                    }
-                    const blob = new Blob([JSON.stringify(metadata)], { type: 'application/json' })
-                    const files = [
-                        new File(['contents-of-post-' + uuid], 'plain-utf8.txt'),
-                        new File([blob], 'metadata.json'),
-                    ]
-                    const metadataCid = await storeFiles(files)
-                    console.log(metadataCid)
-
-                    if (metadataCid) {
-                        createPost('ipfs://' + metadataCid + '/metadata.json')
-                    }
-                }
-            } catch (error) {
-                console.log(error)
-                return
-            }
+        if (content != '' && !imageURL) {
+            // TEXT post
+            createPost({ content: content })
+            console.log('HanldeSubmit: TEXT post')
+        } else if (content == '' && imageURL && imageBuffer && imageExtension) {
+            // IMAGE post
+            createPost({ imageBuffer: imageBuffer, imageExtension: imageExtension })
+            console.log('HanldeSubmit: IMAGE post')
+        } else if (content != '' && imageURL && imageBuffer && imageExtension) {
+            // IMAGE + TEXT post
+            createPost({
+                content: content,
+                imageBuffer: imageBuffer,
+                imageExtension: imageExtension,
+            })
+            console.log('HanldeSubmit: IMAGE + TEXT post')
         } else {
-            try {
-                console.log(content)
-
-                const uuid = uuidv4()
-
-                const metadata = {
-                    version: '2.0.0',
-                    mainContentFocus: 'TEXT_ONLY',
-                    metadata_id: uuid,
-                    description: content,
-                    locale: 'en-US',
-                    content: content,
-                    external_url: null,
-                    image: null,
-                    imageMimeType: null,
-                    name: 'Post by @' + profile.handle,
-                    attributes: [],
-                    tags: ['using_api_examples'],
-                    appId: 'api_examples_github',
-                }
-                const blob = new Blob([JSON.stringify(metadata)], { type: 'application/json' })
-                const files = [new File([blob], 'metadata.json')]
-                const metadataCid = await storeFiles(files)
-                console.log(metadataCid)
-
-                if (metadataCid) {
-                    createPost('ipfs://' + metadataCid + '/metadata.json')
-                }
-            } catch (error) {
-                console.log(error)
-                return
-            }
+            console.log('handleSubmit: You need at least one thing to post!')
+            return
         }
     }
 
-    if (loadingLogin || loadingProfile || loadingTimeline) {
+    useEffect(() => {
+        if (timeline) console.log(timeline)
+    }, [timeline])
+
+    if (loadingLogin || loadingProfile || loadingTimeline || isConnecting) {
         return (
             <div className="w-full min-h-screen flex justify-center items-center">
                 <div className="z-20 text-xl font-light text-gray-800 dark:text-gray-100">
@@ -159,11 +119,21 @@ export default function Feed() {
         )
     }
 
+    if (!isConnected) {
+        return (
+            <div className="w-full min-h-screen flex justify-center items-center">
+                <div className="z-20 text-xl font-light text-gray-800 dark:text-gray-100">
+                    Connect your Wallet
+                </div>
+            </div>
+        )
+    }
+
     if (!isLoggedIn) {
         return (
             <div className="w-full min-h-screen flex justify-center items-center">
                 <div className="z-20 text-xl font-light text-gray-800 dark:text-gray-100">
-                    Login to Lens to access your timeline
+                    Login to Lens to interact with your Frens
                 </div>
             </div>
         )
@@ -173,7 +143,7 @@ export default function Feed() {
         return (
             <div className="w-full min-h-screen flex justify-center items-center">
                 <div className="z-20 text-xl font-light text-gray-800 dark:text-gray-100">
-                    Create a profile and start playing with Lens
+                    Create a profile to interact with your Frens
                 </div>
             </div>
         )
@@ -259,41 +229,80 @@ export default function Feed() {
                 </div>
 
                 {/* Create Post */}
-                <div className="h-52 mb-8 bg-gray-100 dark:bg-gray-850 border border-gray-350 dark:border-gray-750 rounded-xl shadow-lg dark:shadow-xl">
+                <div className="min-h-52 mb-8 bg-gray-100 dark:bg-gray-850 border border-gray-350 dark:border-gray-750 rounded-xl shadow-lg dark:shadow-xl">
                     <form onSubmit={handleSubmit} className="">
                         <div className="flex flex-col justify-start items-start m-5">
+                            {/* - Text Input - */}
                             <textarea
-                                className="z-30 h-28 w-full text-start bg-gray-100 dark:bg-gray-850 border border-gray-350 dark:border-gray-750 rounded-lg"
+                                className="z-10 h-28 w-full text-start bg-gray-100 dark:bg-gray-850 border border-gray-350 dark:border-gray-750 rounded-lg"
                                 style={{ resize: 'none' }}
                                 name="content"
                                 id="content"
                                 placeholder="What's happening?"
-                                required={true}
+                                required={false}
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
                             />
-                            <div className="w-full mt-3 flex flex-row justify-between items-center">
-                                <input
-                                    className="z-30 text-sm"
-                                    type="file"
-                                    name="file"
-                                    id="file"
-                                    required={false}
-                                    onChange={(e) => {
-                                        setImage(e.target.files[0].name)
-                                        console.log(e.target.files[0].name)
-                                    }}
-                                />
-                                <div className=" z-30 flex flex-row justify-center items-center text-gray-850 dark:text-gray-200">
-                                    <PhotoIcon className=" z-20 w-7 h-7" />
-                                    <span className="text-xs font-semibold ml-1">
-                                        Uploaded into IPFS
-                                    </span>
+                            <div className="w-full mt-3 flex flex-row justify-between items-start">
+                                <div className="flex flex-row justify-start items-start space-x-3">
+                                    {/* - Image Input  - */}
+                                    <div className="z-10">
+                                        <label
+                                            className={`cursor-pointer flex flex-row justify-center items-center hover:text-black hover:dark:text-white ${
+                                                imageURL
+                                                    ? 'text-black dark:text-white'
+                                                    : 'text-gray-600 dark:text-gray-400'
+                                            }`}
+                                        >
+                                            <input
+                                                className="hidden"
+                                                type="file"
+                                                name="file"
+                                                id="file"
+                                                required={false}
+                                                onChange={captureFile}
+                                            />
+                                            <PhotoIcon className="w-8 h-8" />
+                                            {imageURL && (
+                                                <span className="text-xs font-semibold ml-1">
+                                                    Image Selected
+                                                </span>
+                                            )}
+                                        </label>
+                                        {imageURL && (
+                                            <img
+                                                src={imageURL}
+                                                className="max-h-[160px] max-w-[125px] h-auto w-auto mt-1 rounded-md"
+                                            />
+                                        )}
+                                    </div>
+
+                                    {/* - GIF Input  - */}
+                                    <div className="z-10">
+                                        <label className="cursor-pointer text-gray-600 dark:text-gray-400 hover:text-black hover:dark:text-white">
+                                            <GifIcon className="w-8 h-8" />
+                                        </label>
+                                    </div>
+
+                                    {/* - Generic Input  - */}
+                                    <div className="z-10">
+                                        <label className="cursor-pointer text-gray-600 dark:text-gray-400 hover:text-black hover:dark:text-white">
+                                            <DocumentPlusIcon className="w-7 h-7" />
+                                        </label>
+                                    </div>
+
+                                    {/* - Something else  - */}
+                                    <div className="z-10">
+                                        <label className="cursor-pointer text-gray-600 dark:text-gray-4 00 hover:text-black hover:dark:text-white">
+                                            <GlobeAltIcon className="w-7 h-7" />
+                                        </label>
+                                    </div>
                                 </div>
 
+                                {/* - Post Button - */}
                                 <button
                                     type="submit"
-                                    className="z-50 rounded-lg px-6 py-2 text-gray-100 dark:text-gray-850 font-light text-base text-center
+                                    className="z-10 rounded-lg px-6 py-2 text-gray-100 dark:text-gray-850 font-light text-base text-center
                                         bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 dark:from-purple-300/80 dark:via-pink-300/80 dark:to-yellow-300/80"
                                 >
                                     <div className=" flex flex-row justify-center items-center">
@@ -368,10 +377,7 @@ export default function Feed() {
                                                               )
                                                             : '/images/file_not_found.jpeg'
                                                     }
-                                                    className="rounded-xl"
-                                                    style={{
-                                                        objectFit: 'cover',
-                                                    }}
+                                                    className="max-h-[512px] max-w-[1024px] h-auto w-auto rounded-xl"
                                                     onError={(e) => {
                                                         e.currentTarget.src =
                                                             '/images/file_not_found.jpeg'
