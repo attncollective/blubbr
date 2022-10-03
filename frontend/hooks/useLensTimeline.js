@@ -390,7 +390,7 @@ export default function useLensTimeline() {
             variables: {
                 request: {
                     profileId: profile.id,
-                    limit: 10,
+                    limit: 20,
                 },
             },
         })

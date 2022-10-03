@@ -135,6 +135,7 @@ export default function useLensProfile() {
         onError({ graphQLErrors, networkError, clientErrors, message }) {},
     })
 
+    // import the variables from the context
     const {
         isLoggedIn,
         loadingProfile: loading,
