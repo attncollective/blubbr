@@ -19,6 +19,7 @@ export default function TrendingNFT({
                             height: '36px',
                             objectFit: 'cover',
                         }}
+                        alt=""
                         onError={(e) => {
                             e.currentTarget.src = '/logos/user_profile.png'
                             e.currentTarget.onerror = null

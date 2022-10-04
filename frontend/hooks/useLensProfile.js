@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSignMessage, useSignTypedData, useSigner, useAccount } from 'wagmi'
 import { gql, useLazyQuery, useMutation } from '@apollo/client'
 import { useLensContext } from '../context/LensProvider'
+import { uploadIpfsBuffer } from '../ipfs'
 
 const GET_PROFILES = `
   query($request: ProfileQueryRequest!) {
@@ -195,30 +196,31 @@ export default function useLensProfile() {
             })
     }
 
-    async function createLensProfile(handle, profilePictureUri) {
-        let data
-        try {
-            data = await createProfile({
-                variables: {
-                    request: {
-                        handle: handle,
-                        profilePictureUri: profilePictureUri,
-                        followNFTURI: null,
-                        followModule: null,
-                    },
+    async function createLensProfile(handle, imageBuffer) {
+        const ipfsImageResult = await uploadIpfsBuffer(imageBuffer)
+        console.log('create post: ipfs result', ipfsImageResult)
+
+        const createProfileResult = await createProfile({
+            variables: {
+                request: {
+                    handle: handle,
+                    profilePictureUri: 'ipfs://' + ipfsImageResult.path,
+                    followNFTURI: null,
+                    followModule: null,
                 },
-                context: {
-                    headers: {
-                        'x-access-token': localStorage.getItem('auth_token')
-                            ? `Bearer ${localStorage.getItem('auth_token')}`
-                            : '',
-                    },
+            },
+            context: {
+                headers: {
+                    'x-access-token': localStorage.getItem('auth_token')
+                        ? `Bearer ${localStorage.getItem('auth_token')}`
+                        : '',
                 },
-            })
-            console.log(data)
-        } catch (err) {
-            console.log(err)
-            console.log(data)
+            },
+        })
+        console.log('create profile: result', createProfileResult)
+
+        if (createProfileResult.data.createProfile.__typename === 'RelayError') {
+            console.error('create profile: failed')
             return
         }
     }

@@ -109,6 +109,7 @@ export default function NftCard({ name, tokenId, symbol, rawUrl, address }) {
                     <img
                         src={url}
                         className="w-72 h-72 sm:w-56 sm:h-56 object-cover rounded-t-lg shadow-lg"
+                        alt=""
                         onError={fetchDataFromNftPort}
                         onLoad={(e) => {
                             if (e.currentTarget.src == '/images/image_not_found.png') {
@@ -129,6 +130,7 @@ export default function NftCard({ name, tokenId, symbol, rawUrl, address }) {
                         src="/images/image_not_found.png"
                         className="w-72 h-72 sm:w-56 sm:h-56 object-cover rounded-t-lg shadow-lg dark:invert-[90%]"
                         style={{ width: '224px', height: '224px', objectFit: 'cover' }}
+                        alt=""
                     />
                 </div>
             )}

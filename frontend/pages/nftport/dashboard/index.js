@@ -34,6 +34,39 @@ export default function NftportDashboard() {
         return newNfts
     }
 
+    async function fetchContinuationNfts() {
+        setLoading(true)
+
+        fetch(
+            `https://api.nftport.xyz/v0/accounts/${address}?chain=${CHAIN}&include=metadata&page_size=20&continuation=${continuation}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: process.env.NEXT_PUBLIC_NFTPORT_API_KEY,
+                },
+            }
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                if (data && data.response == 'OK') {
+                    setNfts(nfts.concat(excludeNull(data.nfts)))
+
+                    setContinuation(data.continuation)
+                    setTotal(data.total)
+                    setLoading(false)
+                } else {
+                    setError('NFTport dashboard: error fetching the data')
+                    setLoading(false)
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+                setError('NFTport dashboard: error fetching data')
+                setLoading(false)
+            })
+    }
+
     async function fetchNfts() {
         setLoading(true)
 
@@ -111,7 +144,7 @@ export default function NftportDashboard() {
         return (
             <div className="w-full min-h-screen flex justify-center items-center">
                 <div className="z-20 text-xl font-light text-gray-800 dark:text-gray-100">
-                    You don't own any NFTs
+                    You don&apos;t own any NFTs
                 </div>
             </div>
         )
@@ -151,7 +184,7 @@ export default function NftportDashboard() {
                 {continuation && nfts.length != total && (
                     <div className="inline-flex mt-2 xs:mt-0 z-10">
                         <button
-                            onClick={''}
+                            onClick={fetchContinuationNfts}
                             className="py-2 px-8 rounded
                         text-sm font-medium text-black dark:text-white
                         bg-black/[18%] dark:bg-white/[10%] hover:bg-black/[33%] dark:hover:bg-white/[25%]"
