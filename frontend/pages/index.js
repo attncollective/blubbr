@@ -54,6 +54,8 @@ export default function Feed() {
     const [imageBuffer, setImageBuffer] = useState(null)
     const [imageExtension, setImageExtension] = useState(null)
 
+    const [mounted, setMounted] = useState(false)
+
     function captureFile(event) {
         if (event.target.files[0]) {
             event.preventDefault()
@@ -109,7 +111,11 @@ export default function Feed() {
         if (timeline) console.log(timeline)
     }, [timeline])
 
-    if (loadingLogin || loadingProfile || loadingTimeline || isConnecting) {
+    useEffect(() => {
+        if (!mounted) setMounted(true)
+    }, [mounted])
+
+    if (!mounted || loadingLogin || loadingProfile || loadingTimeline || isConnecting) {
         return (
             <div className="w-full min-h-screen flex justify-center items-center">
                 <div className="z-20 text-xl font-light text-gray-800 dark:text-gray-100">
@@ -160,11 +166,11 @@ export default function Feed() {
     }
 
     return (
-        <div className="w-full flex justify-center items-center py-8 p-16">
+        <div className="w-full min-h-screen flex flex-col justify-start items-center py-8 p-16">
             <div className="w-full">
                 {/* Profile */}
                 <div className="mb-8 bg-gray-100 dark:bg-gray-850 border border-gray-350 dark:border-gray-750 rounded-xl shadow-lg dark:shadow-xl">
-                    <div className="relative flex justify-start items-center">
+                    <div className="relative h-56 flex flex-row justify-start items-center">
                         {hasProfile && profile.imageUrl && (
                             <div className="h-56 w-56 rounded-xl filter brightness-110 dark:brightness-90">
                                 <img
@@ -317,10 +323,17 @@ export default function Feed() {
                     </form>
                 </div>
 
-                {/* Timeline */}
-                <div className="bg-gray-100 dark:bg-gray-850 border border-gray-350 dark:border-gray-750 rounded-xl shadow-lg dark:shadow-xl">
-                    {timeline &&
-                        timeline.map((post, n) => (
+                {/* - User doesn't have content on Timeline - */}
+                {timeline && timeline.length == 0 && (
+                    <div className="z-20 w-full h-64 flex flex-col justify-center items-center text-xl font-light text-gray-800 dark:text-gray-100">
+                        No Posts yet
+                    </div>
+                )}
+
+                {/* - User have content on Timeline - */}
+                {timeline && timeline.length > 0 && (
+                    <div className="bg-gray-100 dark:bg-gray-850 border border-gray-350 dark:border-gray-750 rounded-xl shadow-lg dark:shadow-xl">
+                        {timeline.map((post, n) => (
                             <div key={post.id}>
                                 <div
                                     className={`relative flex justify-start items-start w-full ${
@@ -402,7 +415,8 @@ export default function Feed() {
                                 </div>
                             </div>
                         ))}
-                </div>
+                    </div>
+                )}
             </div>
         </div>
     )

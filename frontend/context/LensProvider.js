@@ -1,6 +1,4 @@
-import { XMarkIcon } from '@heroicons/react/24/outline'
 import { createContext, useState, useContext } from 'react'
-import { Dialog } from '@headlessui/react'
 import CreateProfileModal from '../components/CreateProfileModal'
 
 const LensContext = createContext()
@@ -56,14 +54,32 @@ export default function LensProvider({ children }) {
             }}
         >
             {showCreateProfileModal && (
-                <div className="relative">
-                    <div className="z-50 fixed top-0 left-0 h-full w-full">
-                        <div className="w-full h-full flex justify-center items-center bg-black/50 dark:bg-black-70 backdrop-blur-sm">
-                            <div className="w-full h-full flex justify-center items-center">
-                                <CreateProfileModal
-                                    setShowCreateProfileModal={setShowCreateProfileModal}
-                                />
-                            </div>
+                <div style={{ zIndex: 50, position: 'relative' }}>
+                    <div
+                        style={{
+                            zIndex: 50,
+                            position: 'fixed',
+                            top: '0px',
+                            left: '0px',
+                            height: '100%',
+                            width: '100%',
+                            backgroundColor: 'rgb(0 0 0 / 0.5)',
+                            backdropFilter: 'blur(4px)',
+                        }}
+                    >
+                        <div
+                            style={{
+                                zIndex: 50,
+                                height: '100%',
+                                width: '100%',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <CreateProfileModal
+                                setShowCreateProfileModal={setShowCreateProfileModal}
+                            />
                         </div>
                     </div>
                 </div>
