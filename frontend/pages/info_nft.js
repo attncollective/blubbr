@@ -104,7 +104,7 @@ export default function NftInfo() {
                     </div>
                     <div></div>
                     <div className="p-5">{itData.unsafeOpenseaDescription}</div>
-                    <div className="p-5">
+                    <div className="p-5 max-w-lg">
                         <div className="flex flex-row">
                             <div className="p-2 border border-gray-750 rounded-tl-xl">
                                 Floor: {itData.stats.floor}
